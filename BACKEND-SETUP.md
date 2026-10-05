@@ -21,9 +21,25 @@ This website is built to use **both Google Sheets and Firebase Firestore simulta
  * Wedding RSVP & Wishes Webhook for Google Sheets
  * Automatically handles RSVP submissions and Wishes into separate tabs.
  */
+function doGet(e) {
+  return ContentService.createTextOutput("Google Sheets Webhook is active and working! ✅");
+}
+
 function doPost(e) {
   try {
-    const data = JSON.parse(e.postData.contents);
+    let data;
+    if (e && e.postData && e.postData.contents) {
+      try {
+        data = JSON.parse(e.postData.contents);
+      } catch (parseErr) {
+        data = e.parameter || {};
+      }
+    } else if (e && e.parameter) {
+      data = e.parameter;
+    } else {
+      data = {};
+    }
+
     const ss = SpreadsheetApp.getActiveSpreadsheet();
 
     if (data.action === "wish") {
