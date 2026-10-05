@@ -22,7 +22,7 @@ const weddingConfig = {
 
   // ── BACKEND INTEGRATIONS ──
   // 1. Google Sheets Web App URL (Deploy Apps Script as Web App with access: Anyone)
-  googleSheetsUrl: "https://script.google.com/macros/s/AKfycbz56-11-cQ99SKLN6uIMJQ4b0L4pCDfDDKlvcqgyvYqxs4epQMFht9z5-vAINQv3cRA/exec",
+  googleSheetsUrl: "https://script.google.com/macros/s/AKfycbxcehFVyU6EiY1wz2UILWWeJJ7nAbV8eixk4rqjl3I9sdYWuhxbNygdr8HgSmPefngl/exec",
 
   // 2. Firebase Configuration (Firebase Console > Project Settings > General > Your apps)
   firebaseConfig: {
