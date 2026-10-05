@@ -12,14 +12,13 @@
 | 🎨 **Design** | Gen Z Digital Scrapbook aesthetic — Polaroids, tape, stickers, annotations |
 | 📱 **Mobile-first** | Fully responsive. Bottom nav on mobile, sticky nav on desktop |
 | ⏳ **Live Countdown** | Real-time countdown to the wedding date |
-| 💌 **RSVP Form** | 3-step guided form with validation, guest names, dietary, song request |
+| 💌 **RSVP & Wishes** | Unified 3-step RSVP + wishes form with live message wall & emoji vibe check |
 | 📖 **Our Story** | Scrapbook timeline of the relationship milestones |
 | 💑 **Couple Profiles** | Playful profile cards for Atif & Isma |
 | 📸 **Receipts Gallery** | Asymmetric photo gallery with polaroid-style captions |
 | 📋 **Wedding Details** | Clean card layout — Date, Time, Venue, Dress Code |
 | 🗺️ **Navigation Links** | One-tap Google Maps + Waze buttons |
 | ❓ **FAQ Accordion** | Accessible, animated accordion for common questions |
-| 💌 **Digital Guestbook** | Leave messages with emoji vibes |
 | 🤣 **Meme Wall** | Editable meme cards for "things we need to address" |
 | 🎵 **Music Player** | Optional floating play button — muted by default |
 | 🥚 **Easter Eggs** | Konami code, secret sticker, floating hearts, DO NOT CLICK |
@@ -88,32 +87,30 @@ In `index.html`, find the `.meme-img-placeholder` elements and replace with:
 <img src="assets/images/meme1.jpg" alt="Meme description" loading="lazy" />
 ```
 
-### 4. Connect RSVP to a Backend — `script.js`
+### 4. Connect to Google Sheets & Firebase Firestore — `script.js`
 
-Find the `submitRSVP(data)` function and replace the mock with:
+This project is built to use **both Google Sheets and Firebase Firestore simultaneously**:
+- **Google Sheets**: Private master guest spreadsheet for the couple (headcounts, guest names, meal choices).
+- **Firebase Firestore**: Google Cloud real-time database powering the live wishes wall for all guests.
 
-**Google Sheets (via Apps Script):**
+Simply open [`script.js`](script.js) and insert your credentials in `weddingConfig`:
+
 ```js
-const SCRIPT_URL = "https://script.google.com/macros/s/YOUR_ID/exec";
-const res = await fetch(SCRIPT_URL, {
-  method: "POST",
-  body: JSON.stringify(data),
-});
-return res.json();
+// 1. Google Sheets Apps Script Web App URL
+googleSheetsUrl: "https://script.google.com/macros/s/YOUR_ID/exec",
+
+// 2. Firebase Configuration
+firebaseConfig: {
+  apiKey: "AIzaSy...",
+  authDomain: "your-project.firebaseapp.com",
+  projectId: "your-project",
+  storageBucket: "your-project.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef"
+}
 ```
 
-**Supabase:**
-```js
-const { error } = await supabase.from("rsvps").insert([data]);
-if (error) throw error;
-return { success: true };
-```
-
-**Firebase Firestore:**
-```js
-await addDoc(collection(db, "rsvps"), data);
-return { success: true };
-```
+👉 **See the complete step-by-step setup guide with copy-paste Apps Script code and Firestore rules in [`BACKEND-SETUP.md`](BACKEND-SETUP.md).**
 
 ### 5. Add Music
 

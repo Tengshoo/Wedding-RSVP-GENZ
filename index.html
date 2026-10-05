@@ -55,7 +55,7 @@
       <li><a href="#hero" class="nav-link">HOME</a></li>
       <li><a href="#story" class="nav-link">STORY</a></li>
       <li><a href="#details" class="nav-link">DETAILS</a></li>
-      <li><a href="#rsvp-section" class="nav-link nav-rsvp">RSVP</a></li>
+      <li><a href="#rsvp-section" class="nav-link nav-rsvp">RSVP &amp; WISHES</a></li>
     </ul>
   </nav>
 
@@ -212,144 +212,248 @@
         </div>
 
         <div class="hook-reaction hook-reaction--no" id="noReaction" aria-live="polite" aria-hidden="true">
-          <div class="reaction-text">💀 Damn.</div>
+          <div class="reaction-text">💀 Ohhh No!!! Sure?</div>
           <div class="reaction-sub">Okay... we'll pretend we're fine.</div>
           <button class="btn btn--comeback" id="comebackBtn">Actually wait, I changed my mind 🙃</button>
         </div>
       </div>
     </section>
 
-    <!-- RSVP FORM SECTION -->
+    <!-- RSVP & WISHES SECTION -->
     <section class="rsvp-form-section" id="rsvp-section" aria-labelledby="rsvpFormHeading">
+      <div id="guestbook" class="anchor-target" aria-hidden="true"></div>
       <div class="container">
         <div class="rsvp-form-header reveal-up">
-          <h2 class="section-heading" id="rsvpFormHeading">LET'S MAKE IT OFFICIAL.</h2>
-          <p class="section-sub">Respectfully, we need a headcount. 🙏</p>
+          <div class="rsvp-badge">💌 CELEBRATE WITH US</div>
+          <h2 class="section-heading" id="rsvpFormHeading">RSVP &amp; WISHES</h2>
+          <p class="section-sub">Lock in your attendance &amp; drop your heartfelt blessings below. ✨</p>
         </div>
 
         <div class="rsvp-card reveal-up">
-          <div class="rsvp-progress" aria-label="Form progress">
-            <div class="rsvp-progress-bar" id="rsvpProgressBar" style="width:33.33%"></div>
-            <span class="rsvp-progress-label" id="rsvpProgressLabel" aria-live="polite">STEP 1 OF 3</span>
+          <!-- TABS -->
+          <div class="rsvp-tabs" role="tablist" aria-label="RSVP and Wishes options">
+            <button type="button" class="rsvp-tab-btn active" id="tabRsvp" role="tab" aria-selected="true"
+              aria-controls="rsvpTabPanel">
+              <span class="tab-emoji">💌</span>
+              <span>RSVP &amp; Wishes</span>
+            </button>
+            <button type="button" class="rsvp-tab-btn" id="tabWishOnly" role="tab" aria-selected="false"
+              aria-controls="wishOnlyTabPanel">
+              <span class="tab-emoji">💬</span>
+              <span>Send a Wish Only</span>
+            </button>
           </div>
 
-          <form class="rsvp-form" id="rsvpForm" novalidate aria-label="RSVP form">
-
-            <!-- STEP 1 -->
-            <div class="rsvp-step rsvp-step--active" id="step1" role="group" aria-label="Step 1: Basic information">
-              <h3 class="rsvp-step-title">Who are you? 🫵</h3>
-              <p class="rsvp-step-hint">Be honest. We know when you're lying.</p>
-
-              <div class="form-group">
-                <label class="form-label" for="guestName">Your Full Name *</label>
-                <input class="form-input" type="text" id="guestName" name="guestName"
-                  placeholder="Enter your full name..." autocomplete="name" required aria-required="true"
-                  aria-describedby="guestNameError" />
-                <span class="form-error" id="guestNameError" role="alert" aria-live="polite"></span>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label">Are you pulling up? *</label>
-                <div class="attendance-options" role="radiogroup" aria-required="true"
-                  aria-describedby="attendanceError">
-                  <label class="attendance-card" for="attYes">
-                    <input type="radio" id="attYes" name="attendance" value="yes" class="sr-only" required />
-                    <span class="attendance-card-inner">
-                      <span class="attendance-card-emoji">🎉</span>
-                      <span class="attendance-card-text">YES, I'M COMING</span>
-                    </span>
-                  </label>
-                  <label class="attendance-card attendance-card--no" for="attNo">
-                    <input type="radio" id="attNo" name="attendance" value="no" class="sr-only" />
-                    <span class="attendance-card-inner">
-                      <span class="attendance-card-emoji">😔</span>
-                      <span class="attendance-card-text">SORRY, CAN'T MAKE IT</span>
-                    </span>
-                  </label>
-                </div>
-                <span class="form-error" id="attendanceError" role="alert" aria-live="polite"></span>
-              </div>
-
-              <button type="button" class="btn btn--primary btn--full" id="step1Next">
-                Next up → <span class="btn-step-label">STEP 2 OF 3</span>
-              </button>
+          <!-- TAB 1: RSVP & WISHES FORM -->
+          <div class="rsvp-tab-panel" id="rsvpTabPanel" role="tabpanel" aria-labelledby="tabRsvp">
+            <div class="rsvp-progress" aria-label="Form progress">
+              <div class="rsvp-progress-bar" id="rsvpProgressBar" style="width:33.33%"></div>
+              <span class="rsvp-progress-label" id="rsvpProgressLabel" aria-live="polite">STEP 1 OF 3</span>
             </div>
 
-            <!-- STEP 2 -->
-            <div class="rsvp-step" id="step2" aria-hidden="true" role="group" aria-label="Step 2: Guest details">
-              <h3 class="rsvp-step-title">Who's rolling with you? 👀</h3>
-              <p class="rsvp-step-hint">Main character behaviour: bring your people.</p>
+            <form class="rsvp-form" id="rsvpForm" novalidate aria-label="RSVP and Wishes form">
 
-              <div class="form-group">
-                <label class="form-label" for="guestCount">Number of Guests (including you)</label>
-                <div class="counter-control">
-                  <button type="button" class="counter-btn" id="guestCountMinus"
-                    aria-label="Decrease guest count">−</button>
-                  <input class="form-input counter-input" type="number" id="guestCount" name="guestCount" value="1"
-                    min="1" max="10" aria-label="Number of guests" aria-describedby="guestCountError" />
-                  <button type="button" class="counter-btn" id="guestCountPlus"
-                    aria-label="Increase guest count">+</button>
+              <!-- STEP 1 -->
+              <div class="rsvp-step rsvp-step--active" id="step1" role="group" aria-label="Step 1: Basic information">
+                <h3 class="rsvp-step-title">Who are you? 🫵</h3>
+                <p class="rsvp-step-hint">Be honest. We know when you're lying.</p>
+
+                <div class="form-group">
+                  <label class="form-label" for="guestName">Your Full Name *</label>
+                  <input class="form-input" type="text" id="guestName" name="guestName"
+                    placeholder="Enter your full name..." autocomplete="name" required aria-required="true"
+                    aria-describedby="guestNameError" />
+                  <span class="form-error" id="guestNameError" role="alert" aria-live="polite"></span>
                 </div>
-                <span class="form-error" id="guestCountError" role="alert" aria-live="polite"></span>
-              </div>
 
-              <div class="form-group" id="additionalGuestsGroup" aria-live="polite"></div>
+                <div class="form-group">
+                  <label class="form-label">Are you pulling up? *</label>
+                  <div class="attendance-options" role="radiogroup" aria-required="true"
+                    aria-describedby="attendanceError">
+                    <label class="attendance-card" for="attYes">
+                      <input type="radio" id="attYes" name="attendance" value="yes" class="sr-only" required />
+                      <span class="attendance-card-inner">
+                        <span class="attendance-card-emoji">🎉</span>
+                        <span class="attendance-card-text">YES, I'M COMING</span>
+                      </span>
+                    </label>
+                    <label class="attendance-card attendance-card--no" for="attNo">
+                      <input type="radio" id="attNo" name="attendance" value="no" class="sr-only" />
+                      <span class="attendance-card-inner">
+                        <span class="attendance-card-emoji">😔</span>
+                        <span class="attendance-card-text">SORRY, CAN'T MAKE IT</span>
+                      </span>
+                    </label>
+                  </div>
+                  <span class="form-error" id="attendanceError" role="alert" aria-live="polite"></span>
+                </div>
 
-              <div class="form-group">
-                <label class="form-label" for="dietary">Dietary Requirements</label>
-                <input class="form-input" type="text" id="dietary" name="dietary"
-                  placeholder="Vegetarian, halal, allergies... (optional)" autocomplete="off" />
-                <span class="form-hint">Your presence &gt; presents. But we still need to feed you.</span>
-              </div>
-
-              <div class="step-nav">
-                <button type="button" class="btn btn--ghost" id="step2Back">← Back</button>
-                <button type="button" class="btn btn--primary" id="step2Next">
-                  Almost done → <span class="btn-step-label">STEP 3 OF 3</span>
+                <button type="button" class="btn btn--primary btn--full" id="step1Next">
+                  Next up → <span class="btn-step-label">STEP 2 OF 3</span>
                 </button>
               </div>
-            </div>
 
-            <!-- STEP 3 -->
-            <div class="rsvp-step" id="step3" aria-hidden="true" role="group" aria-label="Step 3: Message and song">
-              <h3 class="rsvp-step-title">Leave us something 💌</h3>
-              <p class="rsvp-step-hint">We read every single one. For real.</p>
+              <!-- STEP 2 -->
+              <div class="rsvp-step" id="step2" aria-hidden="true" role="group" aria-label="Step 2: Guest details">
+                <h3 class="rsvp-step-title">Who's rolling with you? 👀</h3>
+                <p class="rsvp-step-hint">Main character behaviour: bring your people.</p>
 
-              <div class="form-group">
-                <label class="form-label" for="guestMessage">Message for the Couple</label>
-                <textarea class="form-input form-textarea" id="guestMessage" name="guestMessage"
-                  placeholder="Tell us something nice... or funny. Both work. (optional)" rows="4"
-                  aria-describedby="messageHint"></textarea>
-                <span class="form-hint" id="messageHint">No pressure, but also... pressure. 👀</span>
+                <div class="form-group">
+                  <label class="form-label" for="guestCount">Number of Guests (including you)</label>
+                  <div class="counter-control">
+                    <button type="button" class="counter-btn" id="guestCountMinus"
+                      aria-label="Decrease guest count">−</button>
+                    <input class="form-input counter-input" type="number" id="guestCount" name="guestCount" value="1"
+                      min="1" max="10" aria-label="Number of guests" aria-describedby="guestCountError" />
+                    <button type="button" class="counter-btn" id="guestCountPlus"
+                      aria-label="Increase guest count">+</button>
+                  </div>
+                  <span class="form-error" id="guestCountError" role="alert" aria-live="polite"></span>
+                </div>
+
+                <div class="form-group" id="additionalGuestsGroup" aria-live="polite"></div>
+
+                <div class="form-group">
+                  <label class="form-label" for="dietary">Dietary Requirements</label>
+                  <input class="form-input" type="text" id="dietary" name="dietary"
+                    placeholder="Vegetarian, halal, allergies... (optional)" autocomplete="off" />
+                  <span class="form-hint">Your presence &gt; presents. But we still need to feed you.</span>
+                </div>
+
+                <div class="step-nav">
+                  <button type="button" class="btn btn--ghost" id="step2Back">← Back</button>
+                  <button type="button" class="btn btn--primary" id="step2Next">
+                    Almost done → <span class="btn-step-label">STEP 3 OF 3</span>
+                  </button>
+                </div>
               </div>
 
-              <div class="form-group">
-                <label class="form-label" for="songRequest">Song Request 🎵</label>
-                <input class="form-input" type="text" id="songRequest" name="songRequest"
-                  placeholder="What should we play? (optional)" autocomplete="off" />
-                <span class="form-hint">We reserve the right to veto. 💀</span>
+              <!-- STEP 3 -->
+              <div class="rsvp-step" id="step3" aria-hidden="true" role="group" aria-label="Step 3: Wishes and song">
+                <h3 class="rsvp-step-title">Leave us your wishes 💌</h3>
+                <p class="rsvp-step-hint">We read every single one. Messages will appear on the wall below! ✨</p>
+
+                <div class="form-group">
+                  <label class="form-label">Vibe Check</label>
+                  <div class="emoji-picker rsvp-emoji-picker" role="group" aria-label="Choose a vibe emoji">
+                    <button type="button" class="emoji-btn active" data-emoji="❤️" aria-label="Heart"
+                      aria-pressed="true">❤️</button>
+                    <button type="button" class="emoji-btn" data-emoji="🎉" aria-label="Party"
+                      aria-pressed="false">🎉</button>
+                    <button type="button" class="emoji-btn" data-emoji="🥹" aria-label="Touched"
+                      aria-pressed="false">🥹</button>
+                    <button type="button" class="emoji-btn" data-emoji="🔥" aria-label="Fire"
+                      aria-pressed="false">🔥</button>
+                    <button type="button" class="emoji-btn" data-emoji="✨" aria-label="Sparkles"
+                      aria-pressed="false">✨</button>
+                    <button type="button" class="emoji-btn" data-emoji="💀" aria-label="Skull"
+                      aria-pressed="false">💀</button>
+                  </div>
+                  <input type="hidden" id="rsvpEmoji" name="rsvpEmoji" value="❤️" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="guestMessage">Message &amp; Wishes for the Couple</label>
+                  <textarea class="form-input form-textarea" id="guestMessage" name="guestMessage"
+                    placeholder="Tell us something sweet, funny, or chaotic... Both work. (optional)" rows="4"
+                    aria-describedby="messageHint"></textarea>
+                  <span class="form-hint" id="messageHint">Your message will appear on the Live Wishes Wall below.
+                    👀</span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="songRequest">Song Request 🎵</label>
+                  <input class="form-input" type="text" id="songRequest" name="songRequest"
+                    placeholder="What should we play? (optional)" autocomplete="off" />
+                  <span class="form-hint">We reserve the right to veto. 💀</span>
+                </div>
+
+                <div class="step-nav">
+                  <button type="button" class="btn btn--ghost" id="step3Back">← Back</button>
+                  <button type="submit" class="btn btn--primary btn--submit" id="submitBtn">RSVP LOCKED IN 🔒</button>
+                </div>
               </div>
 
-              <div class="step-nav">
-                <button type="button" class="btn btn--ghost" id="step3Back">← Back</button>
-                <button type="submit" class="btn btn--primary btn--submit" id="submitBtn">RSVP LOCKED IN 🔒</button>
+            </form>
+
+            <!-- Success Screen -->
+            <div class="rsvp-success" id="rsvpSuccess" aria-hidden="true" aria-live="polite">
+              <div class="success-confetti" id="successConfetti" aria-hidden="true"></div>
+              <div class="success-content">
+                <div class="success-emoji">🎊</div>
+                <h3 class="success-title">YOU'RE OFFICIALLY<br />ON THE LIST.</h3>
+                <p class="success-sub" id="successMsg">See you there! 🎉</p>
+                <p class="success-note" id="successWishNote">Your wish has been posted to the wall below! 💌</p>
+                <div class="success-actions">
+                  <a href="#wishesWall" class="btn btn--primary" id="viewWishesBtn">View Wishes Wall ↓</a>
+                  <a href="#hero" class="btn btn--ghost">Back to top ↑</a>
+                </div>
               </div>
-            </div>
-
-          </form>
-
-          <!-- Success Screen -->
-          <div class="rsvp-success" id="rsvpSuccess" aria-hidden="true" aria-live="polite">
-            <div class="success-confetti" id="successConfetti" aria-hidden="true"></div>
-            <div class="success-content">
-              <div class="success-emoji">🎊</div>
-              <h3 class="success-title">YOU'RE OFFICIALLY<br />ON THE LIST.</h3>
-              <p class="success-sub" id="successMsg">See you there! 🎉</p>
-              <p class="success-note">We can't wait. Don't ghost us now. 👀</p>
-              <a href="#hero" class="btn btn--ghost">Back to the top ↑</a>
             </div>
           </div>
+
+          <!-- TAB 2: WISH ONLY FORM -->
+          <div class="wish-only-panel" id="wishOnlyTabPanel" role="tabpanel" aria-labelledby="tabWishOnly" hidden>
+            <div class="wish-panel-header">
+              <h3 class="wish-panel-title">LEAVE A WISH FOR ATIF &amp; ISMA 💌</h3>
+              <p class="wish-panel-sub">Can't make it in person or already RSVPed? Send your love and blessings right
+                here.</p>
+            </div>
+            <form class="guestbook-form" id="guestbookForm" novalidate aria-label="Digital wishes form">
+              <div class="form-group">
+                <label class="form-label" for="gbName">Your Name *</label>
+                <input class="form-input" type="text" id="gbName" name="gbName" placeholder="Your name here..." required
+                  aria-required="true" aria-describedby="gbNameError" />
+                <span class="form-error" id="gbNameError" role="alert" aria-live="polite"></span>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="gbEmoji">Vibe Check</label>
+                <div class="emoji-picker gb-emoji-picker" role="group" aria-label="Choose an emoji">
+                  <button type="button" class="emoji-btn active" data-emoji="❤️" aria-label="Heart"
+                    aria-pressed="true">❤️</button>
+                  <button type="button" class="emoji-btn" data-emoji="🎉" aria-label="Party"
+                    aria-pressed="false">🎉</button>
+                  <button type="button" class="emoji-btn" data-emoji="🥹" aria-label="Touched"
+                    aria-pressed="false">🥹</button>
+                  <button type="button" class="emoji-btn" data-emoji="🔥" aria-label="Fire"
+                    aria-pressed="false">🔥</button>
+                  <button type="button" class="emoji-btn" data-emoji="✨" aria-label="Sparkles"
+                    aria-pressed="false">✨</button>
+                  <button type="button" class="emoji-btn" data-emoji="💀" aria-label="Skull"
+                    aria-pressed="false">💀</button>
+                </div>
+                <input type="hidden" id="gbEmoji" name="gbEmoji" value="❤️" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="gbMessage">Your Message &amp; Wishes *</label>
+                <textarea class="form-input form-textarea" id="gbMessage" name="gbMessage"
+                  placeholder="Write something sweet, funny, embarrassing... we love it all." rows="4" required
+                  aria-required="true" aria-describedby="gbMessageError"></textarea>
+                <span class="form-error" id="gbMessageError" role="alert" aria-live="polite"></span>
+              </div>
+              <button type="submit" class="btn btn--primary btn--full" id="gbSubmitBtn">POST MY WISH 💌</button>
+            </form>
+          </div>
+
         </div>
+
+        <!-- LIVE WISHES WALL -->
+        <div class="wishes-wall-wrap reveal-up" id="wishesWall">
+          <div class="wishes-wall-header">
+            <div class="wishes-wall-title-group">
+              <span class="wishes-wall-badge">WALL OF LOVE</span>
+              <h3 class="wishes-wall-title">GUEST WISHES &amp; LOVE NOTES 💌</h3>
+              <p class="wishes-wall-sub">Real notes, blessings, and hype from our favorite people.</p>
+            </div>
+            <div class="wishes-count-pill" id="wishesCountPill">
+              <span class="wishes-count-dot" aria-hidden="true"></span>
+              <span id="wishesCountText">3 wishes received</span>
+            </div>
+          </div>
+
+          <div class="guestbook-messages" id="guestbookMessages" aria-label="Guest wishes" aria-live="polite"></div>
+        </div>
+
       </div>
     </section>
 
@@ -728,54 +832,6 @@
       </div>
     </section>
 
-    <!-- DIGITAL GUESTBOOK -->
-    <section class="guestbook" id="guestbook" aria-labelledby="guestbookHeading">
-      <div class="container">
-        <div class="section-header reveal-up">
-          <h2 class="section-heading" id="guestbookHeading">LEAVE US SOMETHING 💌</h2>
-          <p class="section-sub">We'll keep this forever. No pressure.</p>
-        </div>
-
-        <div class="guestbook-form-wrap reveal-up">
-          <form class="guestbook-form" id="guestbookForm" novalidate aria-label="Digital guestbook form">
-            <div class="form-group">
-              <label class="form-label" for="gbName">Your Name *</label>
-              <input class="form-input" type="text" id="gbName" name="gbName" placeholder="Your name here..." required
-                aria-required="true" aria-describedby="gbNameError" />
-              <span class="form-error" id="gbNameError" role="alert" aria-live="polite"></span>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="gbEmoji">Vibe Check</label>
-              <div class="emoji-picker" role="group" aria-label="Choose an emoji">
-                <button type="button" class="emoji-btn active" data-emoji="❤️" aria-label="Heart"
-                  aria-pressed="true">❤️</button>
-                <button type="button" class="emoji-btn" data-emoji="🎉" aria-label="Party"
-                  aria-pressed="false">🎉</button>
-                <button type="button" class="emoji-btn" data-emoji="🥹" aria-label="Touched"
-                  aria-pressed="false">🥹</button>
-                <button type="button" class="emoji-btn" data-emoji="🔥" aria-label="Fire"
-                  aria-pressed="false">🔥</button>
-                <button type="button" class="emoji-btn" data-emoji="✨" aria-label="Sparkles"
-                  aria-pressed="false">✨</button>
-                <button type="button" class="emoji-btn" data-emoji="💀" aria-label="Skull"
-                  aria-pressed="false">💀</button>
-              </div>
-              <input type="hidden" id="gbEmoji" name="gbEmoji" value="❤️" />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="gbMessage">Your Message *</label>
-              <textarea class="form-input form-textarea" id="gbMessage" name="gbMessage"
-                placeholder="Write something sweet, funny, embarrassing... we love it all." rows="3" required
-                aria-required="true" aria-describedby="gbMessageError"></textarea>
-              <span class="form-error" id="gbMessageError" role="alert" aria-live="polite"></span>
-            </div>
-            <button type="submit" class="btn btn--primary btn--full">LEAVE MY MESSAGE 💌</button>
-          </form>
-        </div>
-
-        <div class="guestbook-messages" id="guestbookMessages" aria-label="Guest messages" aria-live="polite"></div>
-      </div>
-    </section>
 
     <!-- MEME WALL -->
     <section class="meme-wall" id="meme-wall" aria-labelledby="memeWallHeading">
@@ -865,6 +921,9 @@
     </div>
   </div>
 
+  <!-- Firebase App & Firestore (v10 Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="script.js"></script>
 </body>
 

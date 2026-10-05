@@ -1,67 +1,192 @@
 
 const weddingConfig = {
-  groom:        "Muhammad Atif",
-  bride:        "Ismasari",
+  groom: "Muhammad Atif",
+  bride: "Ismasari",
   // EDITABLE: Set your actual wedding date/time (ISO 8601)
-  date:         "2025-06-15T12:00:00",
+  date: "2025-06-15T12:00:00",
   // EDITABLE: Display-format date string
-  dateDisplay:  "15 June 2025",
-  timeDisplay:  "12:00 PM — 8:00 PM",
+  dateDisplay: "15 June 2025",
+  timeDisplay: "12:00 PM — 8:00 PM",
   // EDITABLE: Venue details
-  venue:        "The Grand Ballroom",
-  address:      "123 Wedding Lane, Kuala Lumpur, Malaysia",
+  venue: "The Grand Ballroom",
+  address: "123 Wedding Lane, Kuala Lumpur, Malaysia",
   // EDITABLE: Navigation URLs (update to real coordinates/venues)
-  mapsUrl:      "https://maps.google.com/?q=Kuala+Lumpur+Malaysia",
-  wazeUrl:      "https://waze.com/ul?ll=3.1390,101.6869&navigate=yes",
+  mapsUrl: "https://maps.google.com/?q=Kuala+Lumpur+Malaysia",
+  wazeUrl: "https://waze.com/ul?ll=3.1390,101.6869&navigate=yes",
   // EDITABLE: Your music URL (mp3, ogg, or streaming link)
-  musicUrl:     "", // e.g. "assets/music/our-song.mp3"
+  musicUrl: "", // e.g. "assets/music/our-song.mp3"
   // EDITABLE: Social hashtag
-  hashtag:      "#AtifIsmaForever",
+  hashtag: "#AtifIsmaForever",
   // EDITABLE: Dress code summary
-  dressCode:    "Smart Casual · Earth Tones",
+  dressCode: "Smart Casual · Earth Tones",
+
+  // ── BACKEND INTEGRATIONS ──
+  // 1. Google Sheets Web App URL (Deploy Apps Script as Web App with access: Anyone)
+  googleSheetsUrl: "", // e.g. "https://script.google.com/macros/s/AKfycb.../exec"
+
+  // 2. Firebase Configuration (Firebase Console > Project Settings > General > Your apps)
+  firebaseConfig: {
+    apiKey: "",            // e.g. "AIzaSy..."
+    authDomain: "",        // e.g. "atif-isma-wedding.firebaseapp.com"
+    projectId: "",         // e.g. "atif-isma-wedding"
+    storageBucket: "",     // e.g. "atif-isma-wedding.appspot.com"
+    messagingSenderId: "", // e.g. "123456789"
+    appId: ""              // e.g. "1:123456789:web:abcdef"
+  }
 };
 
-/**
- * ============================================================
- * RSVP SUBMIT FUNCTION
- * ============================================================
- * This function is the single point of integration for your backend.
- * Replace the mock implementation with your real API call.
- * Supported backends: Google Sheets, Firebase, Supabase, Custom API
- * ============================================================
- */
-async function submitRSVP(data) {
-  console.log("📋 RSVP Data:", data);
-
-  // ── MOCK: Simulate network request ──
-  // Remove this block and replace with real API call below.
-  await new Promise(resolve => setTimeout(resolve, 1200));
-  return { success: true };
-
-  // ── GOOGLE SHEETS EXAMPLE (Apps Script Web App) ──
-  // const SCRIPT_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
-  // const res = await fetch(SCRIPT_URL, {
-  //   method: "POST",
-  //   body: JSON.stringify(data),
-  // });
-  // return res.json();
-
-  // ── SUPABASE EXAMPLE ──
-  // const { data: result, error } = await supabase.from("rsvps").insert([data]);
-  // if (error) throw error;
-  // return { success: true };
+// Firebase Firestore instance helper
+let firestoreDb = null;
+function getFirestore() {
+  if (!firestoreDb && window.firebase && weddingConfig.firebaseConfig && weddingConfig.firebaseConfig.projectId) {
+    try {
+      if (!firebase.apps.length) {
+        firebase.initializeApp(weddingConfig.firebaseConfig);
+      }
+      firestoreDb = firebase.firestore();
+    } catch (err) {
+      console.warn("Firebase initialization error:", err);
+    }
+  }
+  return firestoreDb;
 }
 
 /**
  * ============================================================
- * GUESTBOOK SUBMIT FUNCTION
+ * RSVP SUBMIT FUNCTION — Dual Google Sheets + Firebase Firestore
+ * ============================================================
+ */
+async function submitRSVP(data) {
+  console.log("📋 RSVP Data:", data);
+  const db = getFirestore();
+  let savedToBackend = false;
+
+  // 1. Save to Firebase Firestore (if configured)
+  if (db) {
+    try {
+      const rsvpDoc = {
+        name: data.name,
+        attendance: data.attendance,
+        guestCount: data.guestCount,
+        guestNames: data.guestNames && data.guestNames.length ? data.guestNames.join(", ") : "",
+        dietary: data.dietary || "",
+        emoji: data.emoji || "❤️",
+        message: data.message || "",
+        songRequest: data.songRequest || "",
+        timestamp: data.timestamp || new Date().toISOString()
+      };
+
+      await db.collection("rsvps").add(rsvpDoc);
+      savedToBackend = true;
+
+      // If guest left a wish message, also add to wishes collection for live public board
+      if (data.message && data.message.trim()) {
+        const wishDoc = {
+          name: data.name,
+          emoji: data.emoji || (data.attendance === "yes" ? "🎉" : "💙"),
+          message: data.message.trim(),
+          attendance: data.attendance,
+          timestamp: data.timestamp || new Date().toISOString()
+        };
+        await db.collection("wishes").add(wishDoc);
+      }
+    } catch (err) {
+      console.warn("Firestore error during RSVP:", err);
+    }
+  }
+
+  // 2. Save to Google Sheets (if configured)
+  if (weddingConfig.googleSheetsUrl) {
+    try {
+      const payload = {
+        action: "rsvp",
+        name: data.name,
+        attendance: data.attendance,
+        guestCount: data.guestCount,
+        guestNames: data.guestNames && data.guestNames.length ? data.guestNames.join(", ") : "",
+        dietary: data.dietary || "",
+        emoji: data.emoji || "❤️",
+        message: data.message || "",
+        songRequest: data.songRequest || "",
+        timestamp: data.timestamp || new Date().toISOString()
+      };
+
+      await fetch(weddingConfig.googleSheetsUrl, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      savedToBackend = true;
+    } catch (err) {
+      console.warn("Google Sheets RSVP error:", err);
+    }
+  }
+
+  // 3. Fallback demo simulation if neither is configured yet
+  if (!savedToBackend && !db && !weddingConfig.googleSheetsUrl) {
+    console.log("ℹ️ Demo mode: set googleSheetsUrl or firebaseConfig in weddingConfig to persist data.");
+    await new Promise(resolve => setTimeout(resolve, 800));
+  }
+
+  return { success: true };
+}
+
+/**
+ * ============================================================
+ * GUESTBOOK SUBMIT FUNCTION — Dual Google Sheets + Firebase Firestore
  * ============================================================
  */
 async function submitGuestbookEntry(entry) {
   console.log("💌 Guestbook Entry:", entry);
-  // Mock: stores locally for demo.
-  // Replace with real backend call similarly to submitRSVP above.
-  await new Promise(resolve => setTimeout(resolve, 600));
+  const db = getFirestore();
+  let savedToBackend = false;
+
+  // 1. Save to Firebase Firestore (if configured)
+  if (db) {
+    try {
+      const wishDoc = {
+        name: entry.name,
+        emoji: entry.emoji || "❤️",
+        message: entry.text,
+        attendance: entry.attendance || "",
+        timestamp: entry.timestamp || new Date().toISOString()
+      };
+      await db.collection("wishes").add(wishDoc);
+      savedToBackend = true;
+    } catch (err) {
+      console.warn("Firestore wish error:", err);
+    }
+  }
+
+  // 2. Save to Google Sheets (if configured)
+  if (weddingConfig.googleSheetsUrl) {
+    try {
+      const payload = {
+        action: "wish",
+        name: entry.name,
+        emoji: entry.emoji || "❤️",
+        message: entry.text,
+        attendance: entry.attendance || "",
+        timestamp: entry.timestamp || new Date().toISOString()
+      };
+      await fetch(weddingConfig.googleSheetsUrl, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      savedToBackend = true;
+    } catch (err) {
+      console.warn("Google Sheets wish error:", err);
+    }
+  }
+
+  // Fallback demo simulation
+  if (!savedToBackend && !db && !weddingConfig.googleSheetsUrl) {
+    await new Promise(resolve => setTimeout(resolve, 500));
+  }
+
   return { success: true };
 }
 
@@ -117,27 +242,27 @@ function initCountdown() {
   const target = new Date(weddingConfig.date).getTime();
 
   function tick() {
-    const now  = Date.now();
+    const now = Date.now();
     const diff = target - now;
 
     if (diff <= 0) {
-      document.getElementById("cdDays").textContent  = "00";
+      document.getElementById("cdDays").textContent = "00";
       document.getElementById("cdHours").textContent = "00";
-      document.getElementById("cdMins").textContent  = "00";
-      document.getElementById("cdSecs").textContent  = "00";
+      document.getElementById("cdMins").textContent = "00";
+      document.getElementById("cdSecs").textContent = "00";
       return;
     }
 
-    const days  = Math.floor(diff / 86400000);
+    const days = Math.floor(diff / 86400000);
     const hours = Math.floor((diff % 86400000) / 3600000);
-    const mins  = Math.floor((diff % 3600000) / 60000);
-    const secs  = Math.floor((diff % 60000) / 1000);
+    const mins = Math.floor((diff % 3600000) / 60000);
+    const secs = Math.floor((diff % 60000) / 1000);
 
     const fmt = n => String(n).padStart(2, "0");
-    document.getElementById("cdDays").textContent  = fmt(days);
+    document.getElementById("cdDays").textContent = fmt(days);
     document.getElementById("cdHours").textContent = fmt(hours);
-    document.getElementById("cdMins").textContent  = fmt(mins);
-    document.getElementById("cdSecs").textContent  = fmt(secs);
+    document.getElementById("cdMins").textContent = fmt(mins);
+    document.getElementById("cdSecs").textContent = fmt(secs);
   }
 
   tick();
@@ -148,8 +273,8 @@ function initCountdown() {
    NAVIGATION
    ============================================================ */
 function initNav() {
-  const nav    = document.getElementById("mainNav");
-  const links  = document.querySelectorAll(".nav-link, .bottom-nav-item");
+  const nav = document.getElementById("mainNav");
+  const links = document.querySelectorAll(".nav-link, .bottom-nav-item");
   const sections = document.querySelectorAll("section[id]");
 
   // Scroll: add scrolled class & highlight active link
@@ -179,7 +304,7 @@ function initNav() {
    CUSTOM CURSOR
    ============================================================ */
 function initCursor() {
-  const cursor   = document.getElementById("cursor");
+  const cursor = document.getElementById("cursor");
   const follower = document.getElementById("cursorFollower");
   if (!cursor || !follower) return;
 
@@ -236,11 +361,11 @@ function initReveal() {
    RSVP HOOK (YES / NO buttons)
    ============================================================ */
 function initRsvpHook() {
-  const yesBtn      = document.getElementById("yesBtn");
-  const noBtn       = document.getElementById("noBtn");
-  const hookBtns    = document.getElementById("rsvpHookBtns");
+  const yesBtn = document.getElementById("yesBtn");
+  const noBtn = document.getElementById("noBtn");
+  const hookBtns = document.getElementById("rsvpHookBtns");
   const yesReaction = document.getElementById("yesReaction");
-  const noReaction  = document.getElementById("noReaction");
+  const noReaction = document.getElementById("noReaction");
   const comebackBtn = document.getElementById("comebackBtn");
 
   function showYes() {
@@ -279,18 +404,18 @@ function initRsvpHook() {
    MULTI-STEP RSVP FORM
    ============================================================ */
 function initRsvpForm() {
-  const form        = document.getElementById("rsvpForm");
-  const progress    = document.getElementById("rsvpProgressBar");
+  const form = document.getElementById("rsvpForm");
+  const progress = document.getElementById("rsvpProgressBar");
   const progressLbl = document.getElementById("rsvpProgressLabel");
-  const successEl   = document.getElementById("rsvpSuccess");
-  const successMsg  = document.getElementById("successMsg");
+  const successEl = document.getElementById("rsvpSuccess");
+  const successMsg = document.getElementById("successMsg");
 
-  const steps       = [
+  const steps = [
     document.getElementById("step1"),
     document.getElementById("step2"),
     document.getElementById("step3"),
   ];
-  let currentStep   = 0;
+  let currentStep = 0;
   const TOTAL_STEPS = 3;
 
   // Progress helpers
@@ -382,7 +507,7 @@ function initRsvpForm() {
       inp.className = "form-input";
       inp.type = "text";
       inp.name = `guest_${i}`;
-      inp.id   = `guest_${i}`;
+      inp.id = `guest_${i}`;
       inp.placeholder = `Guest ${i} name...`;
       inp.style.marginTop = "0.5rem";
       inp.autocomplete = "name";
@@ -400,6 +525,22 @@ function initRsvpForm() {
   });
   guestCountInput?.addEventListener("change", renderAdditionalGuests);
 
+  // ── STEP 3 EMOJI PICKER ──
+  let rsvpEmoji = "❤️";
+  document.querySelectorAll(".rsvp-emoji-picker .emoji-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".rsvp-emoji-picker .emoji-btn").forEach(b => {
+        b.classList.remove("active");
+        b.setAttribute("aria-pressed", "false");
+      });
+      btn.classList.add("active");
+      btn.setAttribute("aria-pressed", "true");
+      rsvpEmoji = btn.dataset.emoji;
+      const hiddenInput = document.getElementById("rsvpEmoji");
+      if (hiddenInput) hiddenInput.value = rsvpEmoji;
+    });
+  });
+
   // ── SUBMIT ──
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -414,15 +555,17 @@ function initRsvpForm() {
       if (inp.value.trim()) guestNames.push(inp.value.trim());
     });
 
+    const emojiVal = document.getElementById("rsvpEmoji")?.value || rsvpEmoji || "❤️";
     const data = {
-      name:         document.getElementById("guestName").value.trim(),
-      attendance:   document.querySelector('input[name="attendance"]:checked')?.value || "",
-      guestCount:   parseInt(document.getElementById("guestCount").value, 10) || 1,
+      name: document.getElementById("guestName").value.trim(),
+      attendance: document.querySelector('input[name="attendance"]:checked')?.value || "",
+      guestCount: parseInt(document.getElementById("guestCount").value, 10) || 1,
       guestNames,
-      dietary:      document.getElementById("dietary").value.trim(),
-      message:      document.getElementById("guestMessage").value.trim(),
-      songRequest:  document.getElementById("songRequest").value.trim(),
-      timestamp:    new Date().toISOString(),
+      dietary: document.getElementById("dietary").value.trim(),
+      emoji: emojiVal,
+      message: document.getElementById("guestMessage").value.trim(),
+      songRequest: document.getElementById("songRequest").value.trim(),
+      timestamp: new Date().toISOString(),
     };
 
     try {
@@ -439,6 +582,25 @@ function initRsvpForm() {
           successMsg.textContent = `See you on ${weddingConfig.dateDisplay}! 🎉`;
         } else {
           successMsg.textContent = "We'll miss you. Thanks for letting us know. 💙";
+        }
+
+        // If guest left a wish message, post to the Live Wishes Wall!
+        const wishNote = document.getElementById("successWishNote");
+        if (data.message) {
+          const wishEntry = {
+            name: data.name,
+            emoji: data.emoji || (att === "yes" ? "🎉" : "💙"),
+            text: data.message,
+            attendance: att,
+          };
+          renderGuestbookMessage(wishEntry);
+          updateWishesCount();
+          if (wishNote) {
+            wishNote.textContent = "Your wish has been posted to the wall below! 💌";
+            wishNote.style.display = "block";
+          }
+        } else {
+          if (wishNote) wishNote.style.display = "none";
         }
 
         launchConfetti();
@@ -463,7 +625,7 @@ function launchConfetti() {
   // Check reduced motion
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-  const colours = ["#E8533A","#F5C842","#5BAD7A","#4A90D9","#FF9E7A","#FFD700"];
+  const colours = ["#E8533A", "#F5C842", "#5BAD7A", "#4A90D9", "#FF9E7A", "#FFD700"];
   for (let i = 0; i < 60; i++) {
     const p = document.createElement("div");
     p.style.cssText = `
@@ -503,7 +665,7 @@ function initFaq() {
     btn.addEventListener("click", () => {
       const expanded = btn.getAttribute("aria-expanded") === "true";
       const answerId = btn.getAttribute("aria-controls");
-      const answer   = document.getElementById(answerId);
+      const answer = document.getElementById(answerId);
 
       // Close all
       document.querySelectorAll(".faq-question").forEach(b => {
@@ -521,13 +683,46 @@ function initFaq() {
 }
 
 /* ============================================================
-   DIGITAL GUESTBOOK
+   RSVP / WISHES TABS
+   ============================================================ */
+function initRsvpWishesTabs() {
+  const tabRsvp = document.getElementById("tabRsvp");
+  const tabWishOnly = document.getElementById("tabWishOnly");
+  const panelRsvp = document.getElementById("rsvpTabPanel");
+  const panelWishOnly = document.getElementById("wishOnlyTabPanel");
+
+  if (!tabRsvp || !tabWishOnly || !panelRsvp || !panelWishOnly) return;
+
+  function setMode(wishOnly) {
+    tabRsvp.classList.toggle("active", !wishOnly);
+    tabRsvp.setAttribute("aria-selected", !wishOnly);
+    tabWishOnly.classList.toggle("active", wishOnly);
+    tabWishOnly.setAttribute("aria-selected", wishOnly);
+
+    panelRsvp.hidden = wishOnly;
+    panelWishOnly.hidden = !wishOnly;
+  }
+
+  tabRsvp.addEventListener("click", () => setMode(false));
+  tabWishOnly.addEventListener("click", () => setMode(true));
+}
+
+/* ============================================================
+   LIVE WISHES WALL & GUESTBOOK
    ============================================================ */
 const demoMessages = [
-  { name: "Sarah K.", emoji: "❤️", text: "Congratulations Atif & Isma! So happy for you both. Can't wait to celebrate!" },
-  { name: "Zaid M.", emoji: "🎉", text: "Finally!! The group chat has been waiting for this announcement for YEARS 💀" },
-  { name: "Nurul A.", emoji: "🥹", text: "This is the cutest wedding invitation I've ever seen. You two are so perfect for each other." },
+  { name: "Sarah K.", emoji: "❤️", text: "Congratulations Atif & Isma! So happy for you both. Can't wait to celebrate!", attendance: "yes" },
+  { name: "Zaid M.", emoji: "🎉", text: "Finally!! The group chat has been waiting for this announcement for YEARS 💀", attendance: "yes" },
+  { name: "Nurul A.", emoji: "🥹", text: "This is the cutest wedding invitation I've ever seen. You two are so perfect for each other.", attendance: "yes" },
 ];
+
+function updateWishesCount() {
+  const messages = document.getElementById("guestbookMessages");
+  const countText = document.getElementById("wishesCountText");
+  if (!messages || !countText) return;
+  const count = messages.querySelectorAll(".guestbook-msg").length;
+  countText.textContent = `${count} ${count === 1 ? "wish" : "wishes"} received`;
+}
 
 function renderGuestbookMessage(entry) {
   const messages = document.getElementById("guestbookMessages");
@@ -535,8 +730,18 @@ function renderGuestbookMessage(entry) {
 
   const card = document.createElement("div");
   card.className = "guestbook-msg";
+
+  const badgeHtml = entry.attendance
+    ? `<span class="guestbook-msg-badge ${entry.attendance === 'yes' ? 'badge-yes' : 'badge-no'}">
+        ${entry.attendance === 'yes' ? '🎉 Attending' : '💙 Can\'t make it'}
+       </span>`
+    : '';
+
   card.innerHTML = `
-    <div class="guestbook-msg-emoji">${entry.emoji}</div>
+    <div class="guestbook-msg-top">
+      <div class="guestbook-msg-emoji">${entry.emoji || '💌'}</div>
+      ${badgeHtml}
+    </div>
     <div class="guestbook-msg-name">${escapeHtml(entry.name)}</div>
     <div class="guestbook-msg-text">${escapeHtml(entry.text)}</div>
   `;
@@ -544,21 +749,58 @@ function renderGuestbookMessage(entry) {
 }
 
 function initGuestbook() {
-  // Load demo messages
-  demoMessages.forEach(renderGuestbookMessage);
+  const db = getFirestore();
 
-  // Emoji picker
+  // Real-time listener for wishes from Firestore
+  if (db) {
+    try {
+      db.collection("wishes")
+        .orderBy("timestamp", "asc")
+        .limit(100)
+        .onSnapshot(snapshot => {
+          if (!snapshot.empty) {
+            const messages = document.getElementById("guestbookMessages");
+            if (messages) messages.innerHTML = "";
+            snapshot.forEach(doc => {
+              const row = doc.data();
+              renderGuestbookMessage({
+                name: row.name,
+                emoji: row.emoji || "❤️",
+                text: row.message || row.text,
+                attendance: row.attendance || ""
+              });
+            });
+            updateWishesCount();
+          }
+        }, err => {
+          console.warn("Firestore onSnapshot error:", err);
+          demoMessages.forEach(renderGuestbookMessage);
+          updateWishesCount();
+        });
+    } catch (err) {
+      console.warn("Could not listen to Firestore wishes:", err);
+      demoMessages.forEach(renderGuestbookMessage);
+      updateWishesCount();
+    }
+  } else {
+    // Load demo messages if Firebase is not configured yet
+    demoMessages.forEach(renderGuestbookMessage);
+    updateWishesCount();
+  }
+
+  // Emoji picker for Wish Only form
   let selectedEmoji = "❤️";
-  document.querySelectorAll(".emoji-btn").forEach(btn => {
+  document.querySelectorAll(".gb-emoji-picker .emoji-btn").forEach(btn => {
     btn.addEventListener("click", () => {
-      document.querySelectorAll(".emoji-btn").forEach(b => {
+      document.querySelectorAll(".gb-emoji-picker .emoji-btn").forEach(b => {
         b.classList.remove("active");
         b.setAttribute("aria-pressed", "false");
       });
       btn.classList.add("active");
       btn.setAttribute("aria-pressed", "true");
       selectedEmoji = btn.dataset.emoji;
-      document.getElementById("gbEmoji").value = selectedEmoji;
+      const gbInput = document.getElementById("gbEmoji");
+      if (gbInput) gbInput.value = selectedEmoji;
     });
   });
 
@@ -568,9 +810,9 @@ function initGuestbook() {
 
     let valid = true;
     const nameEl = document.getElementById("gbName");
-    const msgEl  = document.getElementById("gbMessage");
+    const msgEl = document.getElementById("gbMessage");
 
-    document.getElementById("gbNameError").textContent    = "";
+    document.getElementById("gbNameError").textContent = "";
     document.getElementById("gbMessageError").textContent = "";
 
     if (!nameEl.value.trim()) {
@@ -588,32 +830,40 @@ function initGuestbook() {
     if (!valid) return;
 
     const entry = {
-      name:    nameEl.value.trim(),
-      emoji:   selectedEmoji,
-      text:    msgEl.value.trim(),
+      name: nameEl.value.trim(),
+      emoji: selectedEmoji,
+      text: msgEl.value.trim(),
       timestamp: new Date().toISOString(),
     };
 
-    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const submitBtn = document.getElementById("gbSubmitBtn") || e.target.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
-    submitBtn.textContent = "Sending... 💌";
+    submitBtn.textContent = "Posting... 💌";
 
     try {
       await submitGuestbookEntry(entry);
       renderGuestbookMessage(entry);
+      updateWishesCount();
       e.target.reset();
       selectedEmoji = "❤️";
-      document.querySelectorAll(".emoji-btn").forEach((b, i) => {
+      document.querySelectorAll(".gb-emoji-picker .emoji-btn").forEach((b, i) => {
         b.classList.toggle("active", i === 0);
         b.setAttribute("aria-pressed", i === 0 ? "true" : "false");
       });
-      document.getElementById("gbEmoji").value = "❤️";
-      showToast("Message left! They'll love it 💌");
+      const gbInput = document.getElementById("gbEmoji");
+      if (gbInput) gbInput.value = "❤️";
+      launchConfetti();
+      showToast("Wish posted to the wall! 💌");
+
+      // Scroll gently to see the wish
+      setTimeout(() => {
+        document.getElementById("wishesWall")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 300);
     } catch {
       showToast("Something went wrong. Try again! 😅");
     } finally {
       submitBtn.disabled = false;
-      submitBtn.textContent = "LEAVE MY MESSAGE 💌";
+      submitBtn.textContent = "POST MY WISH 💌";
     }
   });
 }
@@ -622,7 +872,7 @@ function initGuestbook() {
    MUSIC PLAYER
    ============================================================ */
 function initMusic() {
-  const btn   = document.getElementById("musicBtn");
+  const btn = document.getElementById("musicBtn");
   const audio = document.getElementById("weddingAudio");
   if (!btn || !audio) return;
 
@@ -658,23 +908,23 @@ function initMusic() {
    FLOATING HEARTS CANVAS
    ============================================================ */
 let heartClickCount = 0;
-let heartsActive    = false;
+let heartsActive = false;
 
 class Heart {
   constructor(canvas) {
-    this.canvas  = canvas;
-    this.x       = Math.random() * canvas.width;
-    this.y       = canvas.height + 20;
-    this.size    = 12 + Math.random() * 24;
-    this.speedY  = 1.5 + Math.random() * 2;
-    this.speedX  = (Math.random() - 0.5) * 1.5;
+    this.canvas = canvas;
+    this.x = Math.random() * canvas.width;
+    this.y = canvas.height + 20;
+    this.size = 12 + Math.random() * 24;
+    this.speedY = 1.5 + Math.random() * 2;
+    this.speedX = (Math.random() - 0.5) * 1.5;
     this.opacity = 0.7 + Math.random() * 0.3;
-    this.sway    = Math.random() * Math.PI * 2;
+    this.sway = Math.random() * Math.PI * 2;
   }
 
   update() {
-    this.y   -= this.speedY;
-    this.x   += Math.sin(this.sway) * 0.8;
+    this.y -= this.speedY;
+    this.x += Math.sin(this.sway) * 0.8;
     this.sway += 0.04;
     this.opacity -= 0.005;
   }
@@ -682,7 +932,7 @@ class Heart {
   draw(ctx) {
     ctx.save();
     ctx.globalAlpha = Math.max(0, this.opacity);
-    ctx.font        = `${this.size}px serif`;
+    ctx.font = `${this.size}px serif`;
     ctx.fillText("♥", this.x, this.y);
     ctx.restore();
   }
@@ -693,12 +943,12 @@ class Heart {
 function initFloatingHearts() {
   const canvas = document.getElementById("heartsCanvas");
   if (!canvas) return;
-  const ctx    = canvas.getContext("2d");
-  let hearts   = [];
+  const ctx = canvas.getContext("2d");
+  let hearts = [];
   let animId;
 
   function resizeCanvas() {
-    canvas.width  = window.innerWidth;
+    canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
   }
   resizeCanvas();
@@ -805,9 +1055,9 @@ function initEasterEggs() {
 
   // ── Konami code ──
   const konamiCode = [
-    "ArrowUp","ArrowUp","ArrowDown","ArrowDown",
-    "ArrowLeft","ArrowRight","ArrowLeft","ArrowRight",
-    "b","a"
+    "ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown",
+    "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight",
+    "b", "a"
   ];
   let konamiIdx = 0;
   document.addEventListener("keydown", (e) => {
@@ -896,12 +1146,12 @@ function escapeHtml(str) {
 function initSmoothScroll() {
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener("click", e => {
-      const id  = a.getAttribute("href").replace("#", "");
-      const el  = document.getElementById(id);
+      const id = a.getAttribute("href").replace("#", "");
+      const el = document.getElementById(id);
       if (!el) return;
       e.preventDefault();
       const offset = 80; // nav height
-      const top    = el.getBoundingClientRect().top + window.scrollY - offset;
+      const top = el.getBoundingClientRect().top + window.scrollY - offset;
       window.scrollTo({ top, behavior: "smooth" });
     });
   });
@@ -917,6 +1167,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initCursor();
   initReveal();
   initRsvpHook();
+  initRsvpWishesTabs();
   initRsvpForm();
   initFaq();
   initGuestbook();
