@@ -22,16 +22,17 @@ const weddingConfig = {
 
   // ── BACKEND INTEGRATIONS ──
   // 1. Google Sheets Web App URL (Deploy Apps Script as Web App with access: Anyone)
-  googleSheetsUrl: "", // e.g. "https://script.google.com/macros/s/AKfycb.../exec"
+  googleSheetsUrl: "https://script.google.com/macros/s/AKfycbz56-11-cQ99SKLN6uIMJQ4b0L4pCDfDDKlvcqgyvYqxs4epQMFht9z5-vAINQv3cRA/exec",
 
   // 2. Firebase Configuration (Firebase Console > Project Settings > General > Your apps)
   firebaseConfig: {
-    apiKey: "",            // e.g. "AIzaSy..."
-    authDomain: "",        // e.g. "atif-isma-wedding.firebaseapp.com"
-    projectId: "",         // e.g. "atif-isma-wedding"
-    storageBucket: "",     // e.g. "atif-isma-wedding.appspot.com"
-    messagingSenderId: "", // e.g. "123456789"
-    appId: ""              // e.g. "1:123456789:web:abcdef"
+    apiKey: "AIzaSyAkfsu97nRvp2_NfXukNHok8QlpNKXrCvM",
+    authDomain: "wedding-rsvp-genz-template.firebaseapp.com",
+    projectId: "wedding-rsvp-genz-template",
+    storageBucket: "wedding-rsvp-genz-template.firebasestorage.app",
+    messagingSenderId: "501909002032",
+    appId: "1:501909002032:web:f288ab17db3cd3bb6c9af5",
+    measurementId: "G-C32WWH7WQ8"
   }
 };
 
