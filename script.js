@@ -14,7 +14,10 @@ const weddingConfig = {
   mapsUrl: "https://maps.google.com/?q=Kuala+Lumpur+Malaysia",
   wazeUrl: "https://waze.com/ul?ll=3.1390,101.6869&navigate=yes",
   // EDITABLE: Your music URL (mp3, ogg, or streaming link)
-  musicUrl: "", // e.g. "assets/music/our-song.mp3"
+  musicUrl: "assets/music/our-song.mp3",
+  musicTitle: "Die With A Smile",
+  musicArtist: "Lady Gaga & Bruno Mars",
+  spotifyUrl: "https://open.spotify.com/track/2plbrEY59IikOBgBGLjaoe",
   // EDITABLE: Social hashtag
   hashtag: "#AtifIsmaForever",
   // EDITABLE: Dress code summary
@@ -989,11 +992,18 @@ function initMusic() {
   const audio = document.getElementById("weddingAudio");
   if (!btn || !audio) return;
 
-  // Hide button if no music URL configured
+  // Ensure button is visible when music is configured
   if (!weddingConfig.musicUrl) {
     btn.style.display = "none";
     return;
   }
+  btn.style.display = "flex";
+
+  const label = btn.querySelector(".music-label");
+  const songName = weddingConfig.musicTitle || "Die With A Smile";
+  const artist = weddingConfig.musicArtist || "Bruno Mars & Lady Gaga";
+
+  if (label) label.textContent = `${songName.toUpperCase()} · PLAY`;
 
   let playing = false;
 
@@ -1003,17 +1013,24 @@ function initMusic() {
         audio.pause();
         playing = false;
         btn.classList.remove("playing");
-        btn.querySelector(".music-label").textContent = "PLAY OUR SONG";
+        if (label) label.textContent = `${songName.toUpperCase()} · PLAY`;
       } else {
         await audio.play();
         playing = true;
         btn.classList.add("playing");
-        btn.querySelector(".music-label").textContent = "NOW PLAYING ♪";
+        if (label) label.textContent = `NOW PLAYING ♪`;
+        showToast(`🎵 Playing: ${songName} — ${artist} (Trending on Spotify #1)`);
       }
     } catch (err) {
       console.warn("Music playback error:", err);
-      showToast("Couldn't play audio 😅 Try again.");
+      showToast("Tap again to play audio 🎵");
     }
+  });
+
+  audio.addEventListener("ended", () => {
+    playing = false;
+    btn.classList.remove("playing");
+    if (label) label.textContent = `${songName.toUpperCase()} · PLAY`;
   });
 }
 

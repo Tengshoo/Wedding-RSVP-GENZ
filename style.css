@@ -322,21 +322,34 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
   z-index: 200;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  background: var(--text);
+  gap: 0.55rem;
+  background: rgba(18, 18, 18, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   color: #fff;
+  border: 1.5px solid rgba(29, 185, 84, 0.4);
   border-radius: var(--radius-xl);
-  padding: 0.5rem 1rem;
+  padding: 0.55rem 1.15rem;
   font-family: var(--font-heading);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  box-shadow: 0 4px 20px var(--shadow-md);
-  transition: background var(--dur), transform var(--dur) var(--ease);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2), 0 0 16px rgba(29, 185, 84, 0.2);
+  transition: all var(--dur) var(--ease);
   cursor: pointer;
 }
-.music-btn:hover { background: var(--accent); transform: scale(1.04); }
-.music-btn.playing { background: var(--accent); }
+.music-btn:hover {
+  background: #1DB954;
+  border-color: #1DB954;
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 8px 28px rgba(29, 185, 84, 0.4);
+}
+.music-btn.playing {
+  background: #1DB954;
+  border-color: #1DB954;
+  box-shadow: 0 0 20px rgba(29, 185, 84, 0.5);
+}
 .music-icon {
   font-size: 1rem;
   display: inline-block;
@@ -347,11 +360,73 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
 }
 @keyframes musicPulse {
   from { transform: scale(1) rotate(-10deg); }
-  to   { transform: scale(1.2) rotate(10deg); }
+  to   { transform: scale(1.25) rotate(10deg); }
 }
 @media (max-width: 640px) {
   .music-btn .music-label { display: none; }
-  .music-btn { padding: 0.6rem; border-radius: 50%; top: 4.5rem; right: 1rem; }
+  .music-btn { padding: 0.65rem; border-radius: 50%; top: 4.5rem; right: 1rem; }
+}
+
+/* ── SPOTIFY SOUNDTRACK ── */
+.soundtrack-section {
+  padding: 3.5rem 0 2rem;
+  background: var(--bg);
+}
+.soundtrack-card {
+  max-width: 640px;
+  margin: 0 auto;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2.25rem 2rem;
+  box-shadow: 0 16px 40px var(--shadow-sm);
+  text-align: center;
+  position: relative;
+  transition: transform 0.3s var(--ease), box-shadow 0.3s;
+}
+.soundtrack-card:hover {
+  box-shadow: 0 20px 48px var(--shadow-md);
+}
+.soundtrack-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #121212;
+  color: #fff;
+  padding: 0.35rem 0.95rem;
+  border-radius: var(--radius-xl);
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+.soundtrack-badge span {
+  background: linear-gradient(90deg, #1DB954, #fff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.soundtrack-title {
+  font-family: var(--font-heading);
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.35rem;
+  color: var(--text);
+}
+.soundtrack-artist {
+  color: var(--text-muted);
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 1.75rem;
+}
+.soundtrack-embed-wrap {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+  background: #282828;
 }
 
 /* ============================================================
