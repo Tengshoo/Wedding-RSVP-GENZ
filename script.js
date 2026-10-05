@@ -419,6 +419,10 @@ function initRsvpForm() {
   let currentStep = 0;
   const TOTAL_STEPS = 3;
 
+  function isAttendingNo() {
+    return document.querySelector('input[name="attendance"]:checked')?.value === "no";
+  }
+
   // Progress helpers
   function setStep(n) {
     steps.forEach((s, i) => {
@@ -427,14 +431,50 @@ function initRsvpForm() {
       s.setAttribute("aria-hidden", i !== n);
     });
     currentStep = n;
-    const pct = ((n + 1) / TOTAL_STEPS) * 100;
-    progress.style.width = pct + "%";
-    progressLbl.textContent = `STEP ${n + 1} OF ${TOTAL_STEPS}`;
+
+    if (isAttendingNo()) {
+      // 2-step flow for guests who can't make it (Step 1 -> Wishes)
+      if (n === 0) {
+        progress.style.width = "50%";
+        progressLbl.textContent = "STEP 1 OF 2";
+      } else {
+        progress.style.width = "100%";
+        progressLbl.textContent = "STEP 2 OF 2";
+      }
+    } else {
+      // 3-step flow for attendees
+      const pct = ((n + 1) / TOTAL_STEPS) * 100;
+      progress.style.width = pct + "%";
+      progressLbl.textContent = `STEP ${n + 1} OF ${TOTAL_STEPS}`;
+    }
 
     // Scroll form into view on step change
     document.getElementById("rsvp-section")
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
+
+  // Dynamic button & label updates when picking attendance
+  function updateStepUiForAttendance() {
+    const step1NextBtn = document.getElementById("step1Next");
+    if (!step1NextBtn) return;
+    if (isAttendingNo()) {
+      step1NextBtn.innerHTML = 'Next up → <span class="btn-step-label">LEAVE A WISH (STEP 2 OF 2)</span>';
+      if (currentStep === 0) {
+        progress.style.width = "50%";
+        progressLbl.textContent = "STEP 1 OF 2";
+      }
+    } else {
+      step1NextBtn.innerHTML = 'Next up → <span class="btn-step-label">STEP 2 OF 3</span>';
+      if (currentStep === 0) {
+        progress.style.width = "33.33%";
+        progressLbl.textContent = "STEP 1 OF 3";
+      }
+    }
+  }
+
+  document.querySelectorAll('input[name="attendance"]').forEach(radio => {
+    radio.addEventListener("change", updateStepUiForAttendance);
+  });
 
   // ── VALIDATION ──
   function clearError(id) {
@@ -480,13 +520,27 @@ function initRsvpForm() {
 
   // Step navigation
   document.getElementById("step1Next")?.addEventListener("click", () => {
-    if (validateStep1()) setStep(1);
+    if (!validateStep1()) return;
+    if (isAttendingNo()) {
+      setStep(2); // Skip Step 2 directly to Wishes (Step 3)
+    } else {
+      setStep(1); // Proceed to headcount (Step 2)
+    }
   });
+
   document.getElementById("step2Back")?.addEventListener("click", () => setStep(0));
+
   document.getElementById("step2Next")?.addEventListener("click", () => {
     if (validateStep2()) setStep(2);
   });
-  document.getElementById("step3Back")?.addEventListener("click", () => setStep(1));
+
+  document.getElementById("step3Back")?.addEventListener("click", () => {
+    if (isAttendingNo()) {
+      setStep(0); // If can't attend, back goes directly to Step 1
+    } else {
+      setStep(1); // Otherwise back goes to Step 2
+    }
+  });
 
   // ── GUEST COUNT COUNTER ──
   const guestCountInput = document.getElementById("guestCount");
@@ -550,22 +604,27 @@ function initRsvpForm() {
     submitBtn.disabled = true;
     submitBtn.textContent = "Locking in... 🔒";
 
-    // Collect guest names
+    const attValue = document.querySelector('input[name="attendance"]:checked')?.value || "";
+    const isAttending = attValue === "yes";
+
+    // Collect guest names only if attending
     const guestNames = [];
-    document.querySelectorAll("[id^='guest_']").forEach(inp => {
-      if (inp.value.trim()) guestNames.push(inp.value.trim());
-    });
+    if (isAttending) {
+      document.querySelectorAll("[id^='guest_']").forEach(inp => {
+        if (inp.value.trim()) guestNames.push(inp.value.trim());
+      });
+    }
 
     const emojiVal = document.getElementById("rsvpEmoji")?.value || rsvpEmoji || "❤️";
     const data = {
       name: document.getElementById("guestName").value.trim(),
-      attendance: document.querySelector('input[name="attendance"]:checked')?.value || "",
-      guestCount: parseInt(document.getElementById("guestCount").value, 10) || 1,
+      attendance: attValue,
+      guestCount: isAttending ? (parseInt(document.getElementById("guestCount")?.value, 10) || 1) : 0,
       guestNames,
-      dietary: document.getElementById("dietary").value.trim(),
+      dietary: isAttending ? (document.getElementById("dietary")?.value?.trim() || "") : "",
       emoji: emojiVal,
-      message: document.getElementById("guestMessage").value.trim(),
-      songRequest: document.getElementById("songRequest").value.trim(),
+      message: document.getElementById("guestMessage")?.value?.trim() || "",
+      songRequest: document.getElementById("songRequest")?.value?.trim() || "",
       timestamp: new Date().toISOString(),
     };
 
@@ -585,7 +644,7 @@ function initRsvpForm() {
           successMsg.textContent = "We'll miss you. Thanks for letting us know. 💙";
         }
 
-        // If guest left a wish message, post to the Live Wishes Wall!
+        // If guest left a wish message, update Live Wishes Wall
         const wishNote = document.getElementById("successWishNote");
         if (data.message) {
           const wishEntry = {
@@ -594,8 +653,12 @@ function initRsvpForm() {
             text: data.message,
             attendance: att,
           };
-          renderGuestbookMessage(wishEntry);
-          updateWishesCount();
+          // Only manually prepend if Firestore is NOT active (fallback mode).
+          // When Firestore is active, onSnapshot handles live real-time rendering.
+          if (!getFirestore()) {
+            renderGuestbookMessage(wishEntry);
+            updateWishesCount();
+          }
           if (wishNote) {
             wishNote.textContent = "Your wish has been posted to the wall below! 💌";
             wishNote.style.display = "block";
@@ -729,8 +792,25 @@ function renderGuestbookMessage(entry) {
   const messages = document.getElementById("guestbookMessages");
   if (!messages) return;
 
+  // Deduplication: prevent duplicate cards from appearing
+  if (entry.id) {
+    const existing = messages.querySelector(`[data-wish-id="${entry.id}"]`);
+    if (existing) return;
+  } else {
+    // If no ID (local fallback), check if the same name and message are already at the top
+    const firstMsg = messages.querySelector(".guestbook-msg");
+    if (firstMsg) {
+      const existingName = firstMsg.querySelector(".guestbook-msg-name")?.textContent;
+      const existingText = firstMsg.querySelector(".guestbook-msg-text")?.textContent;
+      if (existingName === entry.name && existingText === entry.text) {
+        return;
+      }
+    }
+  }
+
   const card = document.createElement("div");
   card.className = "guestbook-msg";
+  if (entry.id) card.setAttribute("data-wish-id", entry.id);
 
   const badgeHtml = entry.attendance
     ? `<span class="guestbook-msg-badge ${entry.attendance === 'yes' ? 'badge-yes' : 'badge-no'}">
@@ -765,6 +845,7 @@ function initGuestbook() {
             snapshot.forEach(doc => {
               const row = doc.data();
               renderGuestbookMessage({
+                id: doc.id,
                 name: row.name,
                 emoji: row.emoji || "❤️",
                 text: row.message || row.text,
@@ -843,8 +924,12 @@ function initGuestbook() {
 
     try {
       await submitGuestbookEntry(entry);
-      renderGuestbookMessage(entry);
-      updateWishesCount();
+      // Only manually prepend if Firestore is NOT active (fallback mode).
+      // When Firestore is active, onSnapshot handles live real-time rendering.
+      if (!getFirestore()) {
+        renderGuestbookMessage(entry);
+        updateWishesCount();
+      }
       e.target.reset();
       selectedEmoji = "❤️";
       document.querySelectorAll(".gb-emoji-picker .emoji-btn").forEach((b, i) => {
