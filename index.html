@@ -324,7 +324,7 @@
               <!-- STEP 3 -->
               <div class="rsvp-step" id="step3" aria-hidden="true" role="group" aria-label="Step 3: Wishes and song">
                 <h3 class="rsvp-step-title">Leave us your wishes 💌</h3>
-                <p class="rsvp-step-hint">We read every single one. Messages will appear on the wall below! ✨</p>
+                <p class="rsvp-step-hint" id="step3Hint">We read every single one. Messages will appear on the wall below! ✨</p>
 
                 <div class="form-group">
                   <label class="form-label">Vibe Check</label>
@@ -354,7 +354,7 @@
                     👀</span>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" id="songRequestGroup">
                   <label class="form-label" for="songRequest">Song Request 🎵</label>
                   <input class="form-input" type="text" id="songRequest" name="songRequest"
                     placeholder="What should we play? (optional)" autocomplete="off" />
@@ -917,7 +917,7 @@
   <!-- Firebase App & Firestore (v10 Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-  <script src="script.js"></script>
+  <script src="script.js?v=2.2"></script>
 </body>
 
 </html>

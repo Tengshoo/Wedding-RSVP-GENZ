@@ -425,6 +425,8 @@ function initRsvpForm() {
 
   // Progress helpers
   function setStep(n) {
+    const isNo = isAttendingNo();
+
     steps.forEach((s, i) => {
       s.style.display = i === n ? "block" : "none";
       s.classList.toggle("rsvp-step--active", i === n);
@@ -432,20 +434,30 @@ function initRsvpForm() {
     });
     currentStep = n;
 
-    if (isAttendingNo()) {
+    const songReqGroup = document.getElementById("songRequestGroup");
+    const step3Hint = document.getElementById("step3Hint");
+    const submitBtn = document.getElementById("submitBtn");
+
+    if (isNo) {
       // 2-step flow for guests who can't make it (Step 1 -> Wishes)
       if (n === 0) {
         progress.style.width = "50%";
-        progressLbl.textContent = "STEP 1 OF 2";
+        progressLbl.textContent = "STEP 1 OF 2 · YOUR DETAILS";
       } else {
         progress.style.width = "100%";
-        progressLbl.textContent = "STEP 2 OF 2";
+        progressLbl.textContent = "STEP 2 OF 2 · LEAVE A WISH 💌";
+        if (songReqGroup) songReqGroup.style.display = "none";
+        if (step3Hint) step3Hint.textContent = "We'll miss you at the wedding, but your warm wishes mean everything to us! 💙";
+        if (submitBtn) submitBtn.textContent = "SEND WISH & SUBMIT 💙";
       }
     } else {
       // 3-step flow for attendees
       const pct = ((n + 1) / TOTAL_STEPS) * 100;
       progress.style.width = pct + "%";
       progressLbl.textContent = `STEP ${n + 1} OF ${TOTAL_STEPS}`;
+      if (songReqGroup) songReqGroup.style.display = "block";
+      if (step3Hint) step3Hint.textContent = "We read every single one. Messages will appear on the wall below! ✨";
+      if (submitBtn) submitBtn.textContent = "RSVP LOCKED IN 🔒";
     }
 
     // Scroll form into view on step change
@@ -458,10 +470,22 @@ function initRsvpForm() {
     const step1NextBtn = document.getElementById("step1Next");
     if (!step1NextBtn) return;
     if (isAttendingNo()) {
-      step1NextBtn.innerHTML = 'Next up → <span class="btn-step-label">LEAVE A WISH (STEP 2 OF 2)</span>';
+      step1NextBtn.innerHTML = 'Go directly to Wishes → <span class="btn-step-label">💌</span>';
       if (currentStep === 0) {
         progress.style.width = "50%";
-        progressLbl.textContent = "STEP 1 OF 2";
+        progressLbl.textContent = "STEP 1 OF 2 · YOUR DETAILS";
+      }
+
+      // If guest has already typed their name, automatically advance to Wishes after a brief visual cue
+      const name = document.getElementById("guestName").value.trim();
+      if (name) {
+        clearError("guestNameError");
+        clearError("attendanceError");
+        setTimeout(() => {
+          if (isAttendingNo() && currentStep === 0) {
+            setStep(2); // Jump directly to wishes step
+          }
+        }, 220);
       }
     } else {
       step1NextBtn.innerHTML = 'Next up → <span class="btn-step-label">STEP 2 OF 3</span>';
@@ -474,6 +498,9 @@ function initRsvpForm() {
 
   document.querySelectorAll('input[name="attendance"]').forEach(radio => {
     radio.addEventListener("change", updateStepUiForAttendance);
+  });
+  document.querySelector('.attendance-card--no')?.addEventListener("click", () => {
+    setTimeout(updateStepUiForAttendance, 50);
   });
 
   // ── VALIDATION ──
