@@ -3,10 +3,10 @@ const weddingConfig = {
   groom: "Muhammad Atif",
   bride: "Ismasari",
   // EDITABLE: Set your actual wedding date/time (ISO 8601)
-  date: "2025-06-15T12:00:00",
+  date: "2025-06-15T17:15:00",
   // EDITABLE: Display-format date string
   dateDisplay: "15 June 2025",
-  timeDisplay: "12:00 PM — 8:00 PM",
+  timeDisplay: "5:15 PM — 10:00 PM",
   // EDITABLE: Venue details
   venue: "The Grand Ballroom",
   address: "123 Wedding Lane, Kuala Lumpur, Malaysia",
