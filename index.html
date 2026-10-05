@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Atif &amp; Isma — We're Getting Married 💍</title>
+  <meta name="description" content="You've officially been invited. Now don't leave us on read." />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Atif &amp; Isma — We're Getting Married 💍" />
+  <meta property="og:description" content="You've officially been invited. Now don't leave us on read." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/images/og-image.jpg" />
+
+  <!-- Twitter/X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Atif &amp; Isma — We're Getting Married 💍" />
+  <meta name="twitter:description" content="You've officially been invited. Now don't leave us on read." />
+  <meta name="twitter:image" content="assets/images/og-image.jpg" />
+
+  <!-- Favicon -->
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💍</text></svg>" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Caveat:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap"
+    rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Custom Cursor (desktop only) -->
+  <div class="cursor" id="cursor" aria-hidden="true"></div>
+  <div class="cursor-follower" id="cursorFollower" aria-hidden="true"></div>
+
+  <!-- Floating Music Button -->
+  <button class="music-btn" id="musicBtn" aria-label="Play or pause our song">
+    <span class="music-icon">♪</span>
+    <span class="music-label">PLAY OUR SONG</span>
+  </button>
+  <!-- EDITABLE: Replace src with actual audio URL in weddingConfig inside script.js -->
+  <audio id="weddingAudio" loop preload="none">
+    <source src="" type="audio/mpeg" />
+  </audio>
+
+  <!-- STICKY NAV -->
+  <nav class="nav" id="mainNav" role="navigation" aria-label="Main navigation">
+    <div class="nav-logo" id="navLogo" aria-label="Home">💍</div>
+    <ul class="nav-links" role="list">
+      <li><a href="#hero" class="nav-link">HOME</a></li>
+      <li><a href="#story" class="nav-link">STORY</a></li>
+      <li><a href="#details" class="nav-link">DETAILS</a></li>
+      <li><a href="#rsvp-section" class="nav-link nav-rsvp">RSVP</a></li>
+    </ul>
+  </nav>
+
+  <!-- BOTTOM MOBILE NAV -->
+  <nav class="bottom-nav" role="navigation" aria-label="Mobile navigation">
+    <a href="#hero" class="bottom-nav-item">
+      <span class="bottom-nav-icon">🏠</span>
+      <span class="bottom-nav-label">Home</span>
+    </a>
+    <a href="#story" class="bottom-nav-item">
+      <span class="bottom-nav-icon">📖</span>
+      <span class="bottom-nav-label">Story</span>
+    </a>
+    <a href="#details" class="bottom-nav-item">
+      <span class="bottom-nav-icon">📋</span>
+      <span class="bottom-nav-label">Details</span>
+    </a>
+    <a href="#rsvp-section" class="bottom-nav-item bottom-nav-rsvp">
+      <span class="bottom-nav-icon">💌</span>
+      <span class="bottom-nav-label">RSVP</span>
+    </a>
+  </nav>
+
+  <main>
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="hero" aria-label="Hero section">
+      <div class="hero-noise" aria-hidden="true"></div>
+      <div class="hero-blob hero-blob--1" aria-hidden="true"></div>
+      <div class="hero-blob hero-blob--2" aria-hidden="true"></div>
+
+      <div class="hero-content">
+        <!-- Left: main text -->
+        <div class="hero-text-col">
+          <div class="hero-tag reveal-up">
+            <span>✨</span> IT'S HAPPENING <span>✨</span>
+          </div>
+
+          <h1 class="hero-heading reveal-up">
+            WE'RE<br />GETTING<br />
+            <span class="hero-heading-accent">MARRIED.</span>
+          </h1>
+
+          <p class="hero-subline reveal-up">
+            <span class="hero-names" id="heroNames">Muhammad Atif</span>
+            <span class="hero-ampersand">&amp;</span>
+            <span class="hero-names">Ismasari</span>
+          </p>
+
+          <p class="hero-caption reveal-up">
+            <em>Welp... this is actually happening.</em> 💀
+          </p>
+
+          <p class="hero-date reveal-up" id="heroDate"></p>
+
+          <!-- Countdown -->
+          <div class="countdown reveal-up" aria-label="Countdown to wedding">
+            <p class="countdown-label">THE FINAL COUNTDOWN ⏳</p>
+            <div class="countdown-grid" role="timer" aria-live="polite">
+              <div class="countdown-block">
+                <span class="countdown-num" id="cdDays">00</span>
+                <span class="countdown-unit">DAYS</span>
+              </div>
+              <div class="countdown-sep" aria-hidden="true">:</div>
+              <div class="countdown-block">
+                <span class="countdown-num" id="cdHours">00</span>
+                <span class="countdown-unit">HRS</span>
+              </div>
+              <div class="countdown-sep" aria-hidden="true">:</div>
+              <div class="countdown-block">
+                <span class="countdown-num" id="cdMins">00</span>
+                <span class="countdown-unit">MIN</span>
+              </div>
+              <div class="countdown-sep" aria-hidden="true">:</div>
+              <div class="countdown-block">
+                <span class="countdown-num" id="cdSecs">00</span>
+                <span class="countdown-unit">SEC</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CTAs -->
+          <div class="hero-ctas reveal-up">
+            <a href="#rsvp-section" class="btn btn--primary" id="heroRsvpBtn">RSVP NOW →</a>
+            <a href="#story" class="btn btn--ghost">See what we're up to ↓</a>
+          </div>
+        </div>
+
+        <!-- Right: Scrapbook visual -->
+        <div class="hero-visual-col" aria-hidden="true">
+          <div class="scrapbook">
+            <div class="polaroid polaroid--main" id="mainPolaroid">
+              <div class="polaroid-img-wrap">
+                <div class="polaroid-img-placeholder">
+                  <span class="polaroid-emoji">💑</span>
+                </div>
+              </div>
+              <p class="polaroid-caption">literally us ✨</p>
+            </div>
+
+            <div class="polaroid polaroid--secondary">
+              <div class="polaroid-img-wrap">
+                <div class="polaroid-img-placeholder">
+                  <span class="polaroid-emoji">💍</span>
+                </div>
+              </div>
+              <p class="polaroid-caption">finally.</p>
+            </div>
+
+            <div class="tape tape--1"></div>
+            <div class="tape tape--2"></div>
+            <div class="tape tape--3"></div>
+
+            <div class="sticker sticker--label sticker--1" id="sticker1">POV: you're invited 🎉</div>
+            <div class="sticker sticker--label sticker--2">no turning back now 💀</div>
+            <div class="sticker sticker--heart sticker--3" id="secretSticker">❤️</div>
+            <div class="sticker sticker--star sticker--4">⭐</div>
+            <div class="sticker sticker--label sticker--5">send help 😭</div>
+
+            <div class="annotation annotation--1">literally us →</div>
+            <div class="annotation annotation--2">← she said yes!</div>
+            <div class="annotation annotation--3">best day ever ↓</div>
+
+            <div class="doodle doodle--heart doodle--1" id="heartLogo">♥</div>
+            <div class="doodle doodle--heart doodle--2">♥</div>
+            <div class="doodle doodle--star">★</div>
+            <div class="doodle doodle--arrow">↗</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-scroll" aria-hidden="true">
+        <span>scroll down</span>
+        <div class="hero-scroll-line"></div>
+      </div>
+    </section>
+
+    <!-- RSVP HOOK SECTION -->
+    <section class="rsvp-hook" id="rsvp-hook" aria-labelledby="rsvpHookHeading">
+      <div class="container">
+        <h2 class="rsvp-hook-heading reveal-up" id="rsvpHookHeading">
+          OKAY BUT...<br /><span class="accent-text">ARE YOU COMING?</span>
+        </h2>
+        <p class="rsvp-hook-sub reveal-up">Don't leave us on read. 👀</p>
+
+        <div class="rsvp-hook-btns reveal-up" id="rsvpHookBtns">
+          <button class="btn btn--yes" id="yesBtn" aria-label="Yes, I am coming">YES, I'M COMING 🕺</button>
+          <button class="btn btn--no" id="noBtn" aria-label="No, I cannot attend">NO 😭</button>
+        </div>
+
+        <div class="hook-reaction hook-reaction--yes" id="yesReaction" aria-live="polite" aria-hidden="true">
+          <div class="reaction-text">LET'S GOOOOOO 🎉</div>
+          <div class="reaction-sub">Scrolling you down to the form...</div>
+        </div>
+
+        <div class="hook-reaction hook-reaction--no" id="noReaction" aria-live="polite" aria-hidden="true">
+          <div class="reaction-text">💀 Damn.</div>
+          <div class="reaction-sub">Okay... we'll pretend we're fine.</div>
+          <button class="btn btn--comeback" id="comebackBtn">Actually wait, I changed my mind 🙃</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RSVP FORM SECTION -->
+    <section class="rsvp-form-section" id="rsvp-section" aria-labelledby="rsvpFormHeading">
+      <div class="container">
+        <div class="rsvp-form-header reveal-up">
+          <h2 class="section-heading" id="rsvpFormHeading">LET'S MAKE IT OFFICIAL.</h2>
+          <p class="section-sub">Respectfully, we need a headcount. 🙏</p>
+        </div>
+
+        <div class="rsvp-card reveal-up">
+          <div class="rsvp-progress" aria-label="Form progress">
+            <div class="rsvp-progress-bar" id="rsvpProgressBar" style="width:33.33%"></div>
+            <span class="rsvp-progress-label" id="rsvpProgressLabel" aria-live="polite">STEP 1 OF 3</span>
+          </div>
+
+          <form class="rsvp-form" id="rsvpForm" novalidate aria-label="RSVP form">
+
+            <!-- STEP 1 -->
+            <div class="rsvp-step rsvp-step--active" id="step1" role="group" aria-label="Step 1: Basic information">
+              <h3 class="rsvp-step-title">Who are you? 🫵</h3>
+              <p class="rsvp-step-hint">Be honest. We know when you're lying.</p>
+
+              <div class="form-group">
+                <label class="form-label" for="guestName">Your Full Name *</label>
+                <input class="form-input" type="text" id="guestName" name="guestName"
+                  placeholder="Enter your full name..." autocomplete="name" required aria-required="true"
+                  aria-describedby="guestNameError" />
+                <span class="form-error" id="guestNameError" role="alert" aria-live="polite"></span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Are you pulling up? *</label>
+                <div class="attendance-options" role="radiogroup" aria-required="true"
+                  aria-describedby="attendanceError">
+                  <label class="attendance-card" for="attYes">
+                    <input type="radio" id="attYes" name="attendance" value="yes" class="sr-only" required />
+                    <span class="attendance-card-inner">
+                      <span class="attendance-card-emoji">🎉</span>
+                      <span class="attendance-card-text">YES, I'M COMING</span>
+                    </span>
+                  </label>
+                  <label class="attendance-card attendance-card--no" for="attNo">
+                    <input type="radio" id="attNo" name="attendance" value="no" class="sr-only" />
+                    <span class="attendance-card-inner">
+                      <span class="attendance-card-emoji">😔</span>
+                      <span class="attendance-card-text">SORRY, CAN'T MAKE IT</span>
+                    </span>
+                  </label>
+                </div>
+                <span class="form-error" id="attendanceError" role="alert" aria-live="polite"></span>
+              </div>
+
+              <button type="button" class="btn btn--primary btn--full" id="step1Next">
+                Next up → <span class="btn-step-label">STEP 2 OF 3</span>
+              </button>
+            </div>
+
+            <!-- STEP 2 -->
+            <div class="rsvp-step" id="step2" aria-hidden="true" role="group" aria-label="Step 2: Guest details">
+              <h3 class="rsvp-step-title">Who's rolling with you? 👀</h3>
+              <p class="rsvp-step-hint">Main character behaviour: bring your people.</p>
+
+              <div class="form-group">
+                <label class="form-label" for="guestCount">Number of Guests (including you)</label>
+                <div class="counter-control">
+                  <button type="button" class="counter-btn" id="guestCountMinus"
+                    aria-label="Decrease guest count">−</button>
+                  <input class="form-input counter-input" type="number" id="guestCount" name="guestCount" value="1"
+                    min="1" max="10" aria-label="Number of guests" aria-describedby="guestCountError" />
+                  <button type="button" class="counter-btn" id="guestCountPlus"
+                    aria-label="Increase guest count">+</button>
+                </div>
+                <span class="form-error" id="guestCountError" role="alert" aria-live="polite"></span>
+              </div>
+
+              <div class="form-group" id="additionalGuestsGroup" aria-live="polite"></div>
+
+              <div class="form-group">
+                <label class="form-label" for="dietary">Dietary Requirements</label>
+                <input class="form-input" type="text" id="dietary" name="dietary"
+                  placeholder="Vegetarian, halal, allergies... (optional)" autocomplete="off" />
+                <span class="form-hint">Your presence &gt; presents. But we still need to feed you.</span>
+              </div>
+
+              <div class="step-nav">
+                <button type="button" class="btn btn--ghost" id="step2Back">← Back</button>
+                <button type="button" class="btn btn--primary" id="step2Next">
+                  Almost done → <span class="btn-step-label">STEP 3 OF 3</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- STEP 3 -->
+            <div class="rsvp-step" id="step3" aria-hidden="true" role="group" aria-label="Step 3: Message and song">
+              <h3 class="rsvp-step-title">Leave us something 💌</h3>
+              <p class="rsvp-step-hint">We read every single one. For real.</p>
+
+              <div class="form-group">
+                <label class="form-label" for="guestMessage">Message for the Couple</label>
+                <textarea class="form-input form-textarea" id="guestMessage" name="guestMessage"
+                  placeholder="Tell us something nice... or funny. Both work. (optional)" rows="4"
+                  aria-describedby="messageHint"></textarea>
+                <span class="form-hint" id="messageHint">No pressure, but also... pressure. 👀</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="songRequest">Song Request 🎵</label>
+                <input class="form-input" type="text" id="songRequest" name="songRequest"
+                  placeholder="What should we play? (optional)" autocomplete="off" />
+                <span class="form-hint">We reserve the right to veto. 💀</span>
+              </div>
+
+              <div class="step-nav">
+                <button type="button" class="btn btn--ghost" id="step3Back">← Back</button>
+                <button type="submit" class="btn btn--primary btn--submit" id="submitBtn">RSVP LOCKED IN 🔒</button>
+              </div>
+            </div>
+
+          </form>
+
+          <!-- Success Screen -->
+          <div class="rsvp-success" id="rsvpSuccess" aria-hidden="true" aria-live="polite">
+            <div class="success-confetti" id="successConfetti" aria-hidden="true"></div>
+            <div class="success-content">
+              <div class="success-emoji">🎊</div>
+              <h3 class="success-title">YOU'RE OFFICIALLY<br />ON THE LIST.</h3>
+              <p class="success-sub" id="successMsg">See you there! 🎉</p>
+              <p class="success-note">We can't wait. Don't ghost us now. 👀</p>
+              <a href="#hero" class="btn btn--ghost">Back to the top ↑</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OUR STORY SECTION -->
+    <section class="story" id="story" aria-labelledby="storyHeading">
+      <div class="container">
+        <div class="section-header reveal-up">
+          <h2 class="section-heading" id="storyHeading">HOW DID WE GET HERE?</h2>
+          <p class="section-sub">A completely unhinged timeline of two people in denial.</p>
+        </div>
+
+        <div class="timeline" role="list">
+          <div class="timeline-item reveal-up" role="listitem">
+            <div class="timeline-dot" aria-hidden="true">✨</div>
+            <div class="timeline-card">
+              <div class="timeline-tag">THE FIRST MEET</div>
+              <div class="timeline-date"><!-- EDITABLE --></div>
+              <p class="timeline-text">The universe decided to be sneaky. Neither of us saw it coming. Classic origin
+                story, honestly.</p>
+              <div class="timeline-sticker" aria-hidden="true">👀</div>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-item--right reveal-up" role="listitem">
+            <div class="timeline-dot" aria-hidden="true">☕</div>
+            <div class="timeline-card">
+              <div class="timeline-tag">THE FIRST DATE</div>
+              <div class="timeline-date"><!-- EDITABLE --></div>
+              <p class="timeline-text">Was it a date? Was it hanging out? We both knew. We both pretended we didn't.</p>
+              <div class="timeline-sticker" aria-hidden="true">😅</div>
+            </div>
+          </div>
+
+          <div class="timeline-item reveal-up" role="listitem">
+            <div class="timeline-dot" aria-hidden="true">💫</div>
+            <div class="timeline-card">
+              <div class="timeline-tag">THE "OH NO, I LIKE YOU" ERA</div>
+              <div class="timeline-date"><!-- EDITABLE --></div>
+              <p class="timeline-text">Panic. Butterflies. Overthinking. Typing and deleting texts. You know the drill.
+              </p>
+              <div class="timeline-sticker" aria-hidden="true">😭</div>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-item--right reveal-up" role="listitem">
+            <div class="timeline-dot" aria-hidden="true">🎉</div>
+            <div class="timeline-card">
+              <div class="timeline-tag">THE OFFICIAL ERA</div>
+              <div class="timeline-date"><!-- EDITABLE --></div>
+              <p class="timeline-text">We stopped pretending. It was official. The group chat went crazy. Rightfully so.
+              </p>
+              <div class="timeline-sticker" aria-hidden="true">💑</div>
+            </div>
+          </div>
+
+          <div class="timeline-item reveal-up" role="listitem">
+            <div class="timeline-dot" aria-hidden="true">💍</div>
+            <div class="timeline-card">
+              <div class="timeline-tag">THE PROPOSAL</div>
+              <div class="timeline-date"><!-- EDITABLE --></div>
+              <p class="timeline-text">He actually did it. She said yes. We both cried. Don't @ us.</p>
+              <div class="timeline-sticker" aria-hidden="true">🥹</div>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-item--right reveal-up" role="listitem">
+            <div class="timeline-dot" aria-hidden="true">🎊</div>
+            <div class="timeline-card">
+              <div class="timeline-tag">THE "WE'RE ACTUALLY GETTING MARRIED" ERA</div>
+              <div class="timeline-date">NOW</div>
+              <p class="timeline-text">This is it. The chaos, the love, the stress, the joy. And now you're here for it.
+                Thank you. 💙</p>
+              <div class="timeline-sticker" aria-hidden="true">🎊</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COUPLE SECTION -->
+    <section class="couple-section" id="couple" aria-labelledby="coupleHeading">
+      <div class="container">
+        <div class="section-header reveal-up">
+          <h2 class="section-heading" id="coupleHeading">THE MAIN CHARACTERS</h2>
+          <p class="section-sub">In case you forgot who this is about.</p>
+        </div>
+
+        <div class="couple-grid">
+          <div class="profile-card reveal-up" data-person="atif">
+            <div class="profile-photo-wrap">
+              <div class="profile-photo-placeholder"><span>👨</span></div>
+              <div class="profile-sticker profile-sticker--1" aria-hidden="true">🚗</div>
+              <div class="profile-sticker profile-sticker--2" aria-hidden="true">⚙️</div>
+            </div>
+            <div class="profile-body">
+              <h3 class="profile-name">ATIF</h3>
+              <p class="profile-role">Professional Overthinker</p>
+              <div class="profile-tags">
+                <span class="profile-tag">🚗 Cars</span>
+                <span class="profile-tag">⚙️ Engineering</span>
+                <span class="profile-tag">🍔 Food</span>
+                <span class="profile-tag">🤔 Overthinking</span>
+              </div>
+              <p class="profile-bio"><!-- EDITABLE --> Always has a plan. Never follows it. Somehow things still work
+                out. Probably because of Isma.</p>
+            </div>
+          </div>
+
+          <div class="couple-connector" aria-hidden="true">
+            <div class="connector-heart">❤️</div>
+            <div class="connector-label">+</div>
+          </div>
+
+          <div class="profile-card reveal-up" data-person="isma">
+            <div class="profile-photo-wrap">
+              <div class="profile-photo-placeholder"><span>👩</span></div>
+              <div class="profile-sticker profile-sticker--1" aria-hidden="true">👑</div>
+              <div class="profile-sticker profile-sticker--2" aria-hidden="true">✨</div>
+            </div>
+            <div class="profile-body">
+              <h3 class="profile-name">ISMA</h3>
+              <p class="profile-role">CEO of Being Right</p>
+              <div class="profile-tags">
+                <!-- EDITABLE -->
+                <span class="profile-tag">👑 Queen</span>
+                <span class="profile-tag">✨ Vibes</span>
+                <span class="profile-tag">💅 Always Right</span>
+                <span class="profile-tag">🎨 Creative</span>
+              </div>
+              <p class="profile-bio"><!-- EDITABLE --> Has been right about everything since day one. Atif is slowly
+                accepting this. Growth.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RECEIPTS SECTION -->
+    <section class="receipts" id="receipts" aria-labelledby="receiptsHeading">
+      <div class="container">
+        <div class="section-header reveal-up">
+          <h2 class="section-heading" id="receiptsHeading">RECEIPTS 📸</h2>
+          <p class="section-sub">Proof that we actually have fun together.</p>
+        </div>
+
+        <div class="gallery reveal-up">
+          <!-- EDITABLE: Replace placeholders with actual images -->
+          <div class="gallery-item gallery-item--large" tabindex="0" aria-label="Photo: caught in 4K">
+            <div class="gallery-img-placeholder">📷</div>
+            <div class="gallery-caption">caught in 4K</div>
+          </div>
+          <div class="gallery-item" tabindex="0" aria-label="Photo: before the wedding planning stress">
+            <div class="gallery-img-placeholder">🌅</div>
+            <div class="gallery-caption">before the wedding planning stress</div>
+          </div>
+          <div class="gallery-item" tabindex="0" aria-label="Photo: she said yes">
+            <div class="gallery-img-placeholder">💍</div>
+            <div class="gallery-caption">she said yes 🥹</div>
+          </div>
+          <div class="gallery-item gallery-item--tall" tabindex="0"
+            aria-label="Photo: he had no idea what he was doing">
+            <div class="gallery-img-placeholder">😅</div>
+            <div class="gallery-caption">he had no idea what he was doing</div>
+          </div>
+          <div class="gallery-item" tabindex="0" aria-label="Photo: certified yap session">
+            <div class="gallery-img-placeholder">💬</div>
+            <div class="gallery-caption">certified yap session</div>
+          </div>
+          <div class="gallery-item" tabindex="0" aria-label="Photo: us every weekend">
+            <div class="gallery-img-placeholder">🥰</div>
+            <div class="gallery-caption">us every weekend honestly</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WEDDING DETAILS -->
+    <section class="details" id="details" aria-labelledby="detailsHeading">
+      <div class="container">
+        <div class="section-header reveal-up">
+          <h2 class="section-heading" id="detailsHeading">THE IMPORTANT STUFF</h2>
+          <p class="section-sub">Screenshot this. We're serious.</p>
+        </div>
+
+        <div class="details-grid">
+          <div class="detail-card reveal-up" aria-label="Wedding date">
+            <div class="detail-icon" aria-hidden="true">📅</div>
+            <div class="detail-label">DATE</div>
+            <div class="detail-value" id="detailDate"></div>
+          </div>
+          <div class="detail-card reveal-up" aria-label="Wedding time">
+            <div class="detail-icon" aria-hidden="true">⏰</div>
+            <div class="detail-label">TIME</div>
+            <div class="detail-value" id="detailTime"></div>
+          </div>
+          <div class="detail-card detail-card--wide reveal-up" aria-label="Wedding venue">
+            <div class="detail-icon" aria-hidden="true">📍</div>
+            <div class="detail-label">VENUE</div>
+            <div class="detail-value" id="detailVenue"></div>
+            <div class="detail-address" id="detailAddress"></div>
+            <div class="detail-btns">
+              <a class="btn btn--map" id="mapsBtn" href="#" target="_blank" rel="noopener noreferrer"
+                aria-label="Open in Google Maps">📍 Google Maps</a>
+              <a class="btn btn--map" id="wazeBtn" href="#" target="_blank" rel="noopener noreferrer"
+                aria-label="Open in Waze">🚗 Waze</a>
+            </div>
+          </div>
+          <div class="detail-card reveal-up" aria-label="Dress code">
+            <div class="detail-icon" aria-hidden="true">👔</div>
+            <div class="detail-label">DRESS CODE</div>
+            <div class="detail-value" id="detailDressCode"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DRESS CODE SECTION -->
+    <section class="dresscode" id="dresscode" aria-labelledby="dresscodeHeading">
+      <div class="container">
+        <div class="section-header reveal-up">
+          <h2 class="section-heading" id="dresscodeHeading">WHAT DO I WEAR?</h2>
+          <p class="section-sub">Please don't make us regret this. 🙏</p>
+        </div>
+
+        <div class="dresscode-cards reveal-up">
+          <!-- EDITABLE: Adjust colours to match your actual dress code -->
+          <div class="dresscode-card" aria-label="Earth tones">
+            <div class="color-swatch" style="background:#C4A882;" aria-hidden="true"></div>
+            <p class="dresscode-card-label">Earth Tones</p>
+            <p class="dresscode-card-hint">Warm beiges, dusty browns</p>
+          </div>
+          <div class="dresscode-card" aria-label="Sage and olive">
+            <div class="color-swatch" style="background:#8FAF8F;" aria-hidden="true"></div>
+            <p class="dresscode-card-label">Sage &amp; Olive</p>
+            <p class="dresscode-card-hint">Muted greens</p>
+          </div>
+          <div class="dresscode-card" aria-label="Dusty rose">
+            <div class="color-swatch" style="background:#C99A9A;" aria-hidden="true"></div>
+            <p class="dresscode-card-label">Dusty Rose</p>
+            <p class="dresscode-card-hint">Soft pinks &amp; mauves</p>
+          </div>
+          <div class="dresscode-card dresscode-card--avoid" aria-label="Avoid white">
+            <div class="color-swatch" style="background:#F8F8F8;border:2px dashed #ccc;" aria-hidden="true"></div>
+            <p class="dresscode-card-label">Not White</p>
+            <p class="dresscode-card-hint">Respectfully. You know why. 💀</p>
+          </div>
+        </div>
+
+        <p class="dresscode-note reveal-up">
+          <!-- EDITABLE -->
+          Theme: <strong id="dresscodeTheme">Smart Casual / Elegant Earth Tones</strong><br />
+          <em>Be comfortable. Be cute. Be on time.</em>
+        </p>
+      </div>
+    </section>
+
+    <!-- EVENT TIMELINE -->
+    <section class="event-timeline" id="event-timeline" aria-labelledby="eventTimelineHeading">
+      <div class="container">
+        <div class="section-header reveal-up">
+          <h2 class="section-heading" id="eventTimelineHeading">RUN OF SHOW</h2>
+          <p class="section-sub">So you actually know what's happening and when.</p>
+        </div>
+
+        <div class="event-timeline-list" role="list">
+          <!-- EDITABLE -->
+          <div class="event-timeline-item reveal-up" role="listitem">
+            <div class="et-time">12:00 PM</div>
+            <div class="et-dot" aria-hidden="true"></div>
+            <div class="et-event"><strong>Guest Arrival</strong>
+              <p>Find a seat. Say hi to people. Try the food.</p>
+            </div>
+          </div>
+          <div class="event-timeline-item reveal-up" role="listitem">
+            <div class="et-time">12:30 PM</div>
+            <div class="et-dot" aria-hidden="true"></div>
+            <div class="et-event"><strong>The Ceremony</strong>
+              <p>The main event. Tissues recommended. Just saying.</p>
+            </div>
+          </div>
+          <div class="event-timeline-item reveal-up" role="listitem">
+            <div class="et-time">1:30 PM</div>
+            <div class="et-dot" aria-hidden="true"></div>
+            <div class="et-event"><strong>Reception &amp; Dining</strong>
+              <p>Eat. Laugh. Catch up with people you've been "meaning to call".</p>
+            </div>
+          </div>
+          <div class="event-timeline-item reveal-up" role="listitem">
+            <div class="et-time">3:00 PM</div>
+            <div class="et-dot" aria-hidden="true"></div>
+            <div class="et-event"><strong>Photo Session</strong>
+              <p>Get your shots. We're definitely stealing them later.</p>
+            </div>
+          </div>
+          <div class="event-timeline-item reveal-up" role="listitem">
+            <div class="et-time">4:00 PM</div>
+            <div class="et-dot" aria-hidden="true"></div>
+            <div class="et-event"><strong>Cake &amp; Toasts</strong>
+              <p>The moment everyone's been waiting for. (The cake, obviously.)</p>
+            </div>
+          </div>
+          <div class="event-timeline-item reveal-up" role="listitem">
+            <div class="et-time">5:00 PM</div>
+            <div class="et-dot" aria-hidden="true"></div>
+            <div class="et-event"><strong>Party &amp; Dancing</strong>
+              <p>Don't just stand there. This is not optional.</p>
+            </div>
+          </div>
+          <div class="event-timeline-item reveal-up" role="listitem">
+            <div class="et-time">8:00 PM</div>
+            <div class="et-dot et-dot--end" aria-hidden="true"></div>
+            <div class="et-event"><strong>Send-Off ✨</strong>
+              <p>Go home. Drive safe. Text us you arrived.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <section class="faq" id="faq" aria-labelledby="faqHeading">
+      <div class="container">
+        <div class="section-header reveal-up">
+          <h2 class="section-heading" id="faqHeading">YOU HAVE QUESTIONS.</h2>
+          <p class="section-sub">We figured. Here's the answers.</p>
+        </div>
+
+        <div class="faq-list reveal-up" role="list">
+          <div class="faq-item" role="listitem">
+            <button class="faq-question" aria-expanded="false" aria-controls="faq-a1" id="faq-q1">
+              Can I bring a plus one? <span class="faq-chevron" aria-hidden="true">↓</span>
+            </button>
+            <div class="faq-answer" id="faq-a1" aria-labelledby="faq-q1" hidden><!-- EDITABLE --> Yes, but please let us
+              know on the RSVP so we can sort seating. Don't just show up with someone unannounced. We see you. 👀</div>
+          </div>
+          <div class="faq-item" role="listitem">
+            <button class="faq-question" aria-expanded="false" aria-controls="faq-a2" id="faq-q2">
+              Is parking available? <span class="faq-chevron" aria-hidden="true">↓</span>
+            </button>
+            <div class="faq-answer" id="faq-a2" aria-labelledby="faq-q2" hidden><!-- EDITABLE --> Yes! Parking is
+              available on-site. If it's full, there's overflow parking nearby. Use the map link in the Details section.
+              📍</div>
+          </div>
+          <div class="faq-item" role="listitem">
+            <button class="faq-question" aria-expanded="false" aria-controls="faq-a3" id="faq-q3">
+              What should I wear? <span class="faq-chevron" aria-hidden="true">↓</span>
+            </button>
+            <div class="faq-answer" id="faq-a3" aria-labelledby="faq-q3" hidden><!-- EDITABLE --> Smart casual. Earth
+              tones and soft colours. The "What Do I Wear?" section above has a visual guide. Please, no white. You know
+              why. 💀</div>
+          </div>
+          <div class="faq-item" role="listitem">
+            <button class="faq-question" aria-expanded="false" aria-controls="faq-a4" id="faq-q4">
+              What time should I arrive? <span class="faq-chevron" aria-hidden="true">↓</span>
+            </button>
+            <div class="faq-answer" id="faq-a4" aria-labelledby="faq-q4" hidden><!-- EDITABLE --> Doors open at 12:00
+              PM. The ceremony starts at 12:30 PM sharp. Please do not be late. We will give you the look. 👁️👄👁️
+            </div>
+          </div>
+          <div class="faq-item" role="listitem">
+            <button class="faq-question" aria-expanded="false" aria-controls="faq-a5" id="faq-q5">
+              Can I bring kids? <span class="faq-chevron" aria-hidden="true">↓</span>
+            </button>
+            <div class="faq-answer" id="faq-a5" aria-labelledby="faq-q5" hidden><!-- EDITABLE --> Absolutely! The more
+              the merrier. Just make sure they're registered in your RSVP headcount so we can accommodate everyone. 🧒
+            </div>
+          </div>
+          <div class="faq-item" role="listitem">
+            <button class="faq-question" aria-expanded="false" aria-controls="faq-a6" id="faq-q6">
+              Who do I contact if I'm lost? <span class="faq-chevron" aria-hidden="true">↓</span>
+            </button>
+            <div class="faq-answer" id="faq-a6" aria-labelledby="faq-q6" hidden><!-- EDITABLE --> Don't call us — we'll
+              be a bit busy. Contact [Coordinator Name] at [Phone Number]. They'll sort you out. 📞</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DIGITAL GUESTBOOK -->
+    <section class="guestbook" id="guestbook" aria-labelledby="guestbookHeading">
+      <div class="container">
+        <div class="section-header reveal-up">
+          <h2 class="section-heading" id="guestbookHeading">LEAVE US SOMETHING 💌</h2>
+          <p class="section-sub">We'll keep this forever. No pressure.</p>
+        </div>
+
+        <div class="guestbook-form-wrap reveal-up">
+          <form class="guestbook-form" id="guestbookForm" novalidate aria-label="Digital guestbook form">
+            <div class="form-group">
+              <label class="form-label" for="gbName">Your Name *</label>
+              <input class="form-input" type="text" id="gbName" name="gbName" placeholder="Your name here..." required
+                aria-required="true" aria-describedby="gbNameError" />
+              <span class="form-error" id="gbNameError" role="alert" aria-live="polite"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="gbEmoji">Vibe Check</label>
+              <div class="emoji-picker" role="group" aria-label="Choose an emoji">
+                <button type="button" class="emoji-btn active" data-emoji="❤️" aria-label="Heart"
+                  aria-pressed="true">❤️</button>
+                <button type="button" class="emoji-btn" data-emoji="🎉" aria-label="Party"
+                  aria-pressed="false">🎉</button>
+                <button type="button" class="emoji-btn" data-emoji="🥹" aria-label="Touched"
+                  aria-pressed="false">🥹</button>
+                <button type="button" class="emoji-btn" data-emoji="🔥" aria-label="Fire"
+                  aria-pressed="false">🔥</button>
+                <button type="button" class="emoji-btn" data-emoji="✨" aria-label="Sparkles"
+                  aria-pressed="false">✨</button>
+                <button type="button" class="emoji-btn" data-emoji="💀" aria-label="Skull"
+                  aria-pressed="false">💀</button>
+              </div>
+              <input type="hidden" id="gbEmoji" name="gbEmoji" value="❤️" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="gbMessage">Your Message *</label>
+              <textarea class="form-input form-textarea" id="gbMessage" name="gbMessage"
+                placeholder="Write something sweet, funny, embarrassing... we love it all." rows="3" required
+                aria-required="true" aria-describedby="gbMessageError"></textarea>
+              <span class="form-error" id="gbMessageError" role="alert" aria-live="polite"></span>
+            </div>
+            <button type="submit" class="btn btn--primary btn--full">LEAVE MY MESSAGE 💌</button>
+          </form>
+        </div>
+
+        <div class="guestbook-messages" id="guestbookMessages" aria-label="Guest messages" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- MEME WALL -->
+    <section class="meme-wall" id="meme-wall" aria-labelledby="memeWallHeading">
+      <div class="container">
+        <div class="section-header reveal-up">
+          <h2 class="section-heading" id="memeWallHeading">THINGS WE NEED TO ADDRESS</h2>
+          <p class="section-sub">An honest reflection on this entire situation.</p>
+        </div>
+
+        <div class="meme-grid">
+          <!-- EDITABLE: Replace emoji placeholders with actual meme images -->
+          <div class="meme-card reveal-up" aria-label="Meme: planning a wedding">
+            <p class="meme-top-text">Us trying to plan a wedding:</p>
+            <div class="meme-img-placeholder" aria-hidden="true"><span>😅</span></div>
+            <p class="meme-bottom-text">"This is fine."</p>
+          </div>
+          <div class="meme-card reveal-up" aria-label="Meme: 5 minutes later">
+            <p class="meme-top-text">Also us 5 minutes later:</p>
+            <div class="meme-img-placeholder" aria-hidden="true"><span>💀</span></div>
+            <p class="meme-bottom-text">"Everything is on fire."</p>
+          </div>
+          <div class="meme-card reveal-up" aria-label="Meme: RSVP YES">
+            <p class="meme-top-text">When someone RSVPs YES:</p>
+            <div class="meme-img-placeholder" aria-hidden="true"><span>🤩</span></div>
+            <p class="meme-bottom-text">"We love you. We see you."</p>
+          </div>
+          <div class="meme-card reveal-up" aria-label="Meme: budget vs vision">
+            <p class="meme-top-text">Our wallet vs our vision:</p>
+            <div class="meme-img-placeholder" aria-hidden="true"><span>😬</span></div>
+            <p class="meme-bottom-text">"Anyway, RSVP please."</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DO NOT CLICK EASTER EGG -->
+    <div class="dne-container">
+      <button class="dne-btn" id="dneBtn" aria-label="Secret button — do not click">DO NOT CLICK ⚠️</button>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer" role="contentinfo">
+      <div class="container">
+        <div class="footer-hearts" aria-hidden="true">
+          <span class="footer-heart" id="heartClickTarget">♥</span>
+        </div>
+        <p class="footer-names">Muhammad Atif &amp; Ismasari</p>
+        <p class="footer-date" id="footerDate"></p>
+        <p class="footer-hashtag" id="footerHashtag"></p>
+        <p class="footer-note">
+          Made with ❤️ &amp; a lot of wedding planning stress.<br />
+          <span class="footer-tiny">Your presence &gt; presents. Always.</span>
+        </p>
+        <p class="footer-copy">
+          &copy; <span id="footerYear"></span> Muhammad Atif &amp; Ismasari. All rights reserved (to get married).
+        </p>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- FLOATING HEARTS CANVAS (Easter Egg) -->
+  <canvas id="heartsCanvas" class="hearts-canvas" aria-hidden="true"></canvas>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-hidden="true"></div>
+
+  <!-- EASTER EGG OVERLAY -->
+  <div class="easter-egg-overlay" id="easterEggOverlay" aria-modal="true" role="dialog" aria-label="Secret found!"
+    aria-hidden="true">
+    <div class="easter-egg-box">
+      <div class="easter-egg-emoji">👀</div>
+      <h3>you found the secret</h3>
+      <p>Okay you are genuinely too curious. We respect it though. 💀</p>
+      <button class="btn btn--primary" id="closeEasterEgg">okay bye 👋</button>
+    </div>
+  </div>
+
+  <!-- DNE OVERLAY -->
+  <div class="easter-egg-overlay" id="dneOverlay" aria-modal="true" role="dialog" aria-label="You clicked it!"
+    aria-hidden="true">
+    <div class="easter-egg-box">
+      <div class="easter-egg-emoji">💀</div>
+      <h3>We said DO NOT CLICK.</h3>
+      <p>And yet here you are. Iconic behaviour. Since you're here — have you RSVPed yet? 👀</p>
+      <a href="#rsvp-section" class="btn btn--primary" id="closeDne">Go RSVP 👉</a>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
