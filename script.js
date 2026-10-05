@@ -15,9 +15,9 @@ const weddingConfig = {
   wazeUrl: "https://waze.com/ul?ll=3.1390,101.6869&navigate=yes",
   // EDITABLE: Your music URL (mp3, ogg, or streaming link)
   musicUrl: "assets/music/our-song.mp3",
-  musicTitle: "Die With A Smile",
-  musicArtist: "Lady Gaga & Bruno Mars",
-  spotifyUrl: "https://open.spotify.com/track/2plbrEY59IikOBgBGLjaoe",
+  musicTitle: "Bernaung",
+  musicArtist: "Feby Putri",
+  spotifyUrl: "https://open.spotify.com/track/16Q9MOCDYgrgjEHx6Hx2rv",
   // EDITABLE: Social hashtag
   hashtag: "#AtifIsmaForever",
   // EDITABLE: Dress code summary
@@ -1000,8 +1000,8 @@ function initMusic() {
   btn.style.display = "flex";
 
   const label = btn.querySelector(".music-label");
-  const songName = weddingConfig.musicTitle || "Die With A Smile";
-  const artist = weddingConfig.musicArtist || "Bruno Mars & Lady Gaga";
+  const songName = weddingConfig.musicTitle || "Bernaung";
+  const artist = weddingConfig.musicArtist || "Feby Putri";
 
   if (label) label.textContent = `${songName.toUpperCase()} · PLAY`;
 
@@ -1019,7 +1019,7 @@ function initMusic() {
         playing = true;
         btn.classList.add("playing");
         if (label) label.textContent = `NOW PLAYING ♪`;
-        showToast(`🎵 Playing: ${songName} — ${artist} (Trending on Spotify #1)`);
+        showToast(`🎵 Playing: ${songName} — ${artist}`);
       }
     } catch (err) {
       console.warn("Music playback error:", err);
